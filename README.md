@@ -1,2 +1,2 @@
 # hpsdr-rpitx
-Trasceiver based on librpitx and rtl-sdr
+Trasceiver based on librpitx (https://github.com/F5OEO/librpitx) and hpsdrsim (https://github.com/hiperiondev/hpsdrsim)
