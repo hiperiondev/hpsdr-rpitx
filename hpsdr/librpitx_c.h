@@ -14,9 +14,9 @@
 extern "C" {
 #endif
 
-void rpitx_iq_init(int SampleRate, float SetFrequency);
+void rpitx_iq_init(int SampleRate, float SetFrequency, int txptr);
 void rpitx_iq_deinit(void);
-void rpitx_iq_send(double *isample, double *qsample);
+void rpitx_iq_send(struct samples_t *iqsamples_tx, int *enable);
 
 #ifdef __cplusplus
 }

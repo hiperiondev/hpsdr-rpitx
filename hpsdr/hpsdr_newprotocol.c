@@ -106,8 +106,6 @@ static pthread_t mic_thread_id;
 static pthread_t audio_thread_id;
 static pthread_t highprio_thread_id = 0;
 static pthread_t send_highprio_thread_id;
-static pthread_t tx_hardware_thread_id;
-static pthread_t rx_hardware_thread_id[NUMRECEIVERS];
 
 void* ddc_specific_thread(void*);
 void* duc_specific_thread(void*);
@@ -117,12 +115,19 @@ void* rx_thread(void*);
 void* tx_thread(void*);
 void* mic_thread(void*);
 void* audio_thread(void*);
-void* tx_hardware_thread(void*);
-void* rx_hardware_thread(void*);
 
 static double txlevel;
+// Address where to send packets from the old and new protocol
+// to the PC
+struct sockaddr_in addr_new;
+struct sockaddr_in addr_old;
 
-int new_protocol_running() {
+void new_protocol_init(struct sockaddr_in addr_new_, struct sockaddr_in addr_old_) {
+	addr_new = addr_new_;
+	addr_old = addr_old_;
+}
+
+int new_protocol_running(void) {
     if (run)
         return 1;
     else
@@ -613,9 +618,6 @@ void* highprio_thread(void *data) {
                     if (pthread_create(&rx_thread_id[i], NULL, rx_thread, (void*) (uintptr_t) i) < 0) {
                         dbg_printf(1, "***** ERROR: Create RX thread\n");
                     }
-                    if (pthread_create(&rx_hardware_thread_id[i], NULL, rx_hardware_thread, (void*) (uintptr_t) i) < 0) {
-                        dbg_printf(1, "***** ERROR: Create RX Hardware thread %d\n", i);
-                    }
                 }
                 if (pthread_create(&tx_thread_id, NULL, tx_thread, NULL) < 0) {
                     dbg_printf(1, "***** ERROR: Create TX thread\n");
@@ -653,8 +655,8 @@ void* highprio_thread(void *data) {
             ptt = rc;
             dbg_printf(1, "HP: PTT=%d\n", rc);
             if (ptt == 0) {
-                memset(isample, 0, sizeof(float) * NEWRTXLEN);
-                memset(qsample, 0, sizeof(float) * NEWRTXLEN);
+                memset(iqsamples.isample, 0, sizeof(float) * NEWRTXLEN);
+                memset(iqsamples.qsample, 0, sizeof(float) * NEWRTXLEN);
             }
         }
         rc = (buffer[5] >> 0) & 0x01;
@@ -893,8 +895,8 @@ void* rx_thread(void *data) {
             // a) add man-made-noise on I-sample of RX channel
             // b) add man-made-noise on Q-sample of "synced" channel
             if (sync && (rxrate[myadc] == 192) && ptt && (syncadc == adc)) {
-                irsample = isample[rxptr];
-                qrsample = qsample[rxptr++];
+                irsample = iqsamples.isample[rxptr];
+                qrsample = iqsamples.qsample[rxptr++];
                 if (rxptr >= NEWRTXLEN)
                     rxptr = 0;
                 fac = txatt_dbl * txdrv_dbl * (IM3a + IM3b * (irsample * irsample + qrsample * qrsample) * txdrv_dbl * txdrv_dbl);
@@ -1056,8 +1058,8 @@ void* tx_thread(void *data) {
             dq *= 1.118;
 
             // put TX samples into ring buffer
-            isample[txptr] = di;
-            qsample[txptr++] = dq;
+            iqsamples.isample[txptr] = di;
+            iqsamples.qsample[txptr++] = dq;
             if (txptr >= NEWRTXLEN)
                 txptr = 0;
 
@@ -1264,26 +1266,5 @@ void* mic_thread(void *data) {
         }
     }
     close(sock);
-    return NULL;
-}
-
-void* tx_hardware_thread(void *data) {
-    dbg_printf(1, "-- Start tx_hardware_thread\n");
-
-    while (1) {
-        sleep(1);
-    }
-
-    return NULL;
-}
-
-void* rx_hardware_thread(void *data) {
-    int id = (int) (uintptr_t) data;
-    dbg_printf(1, "-- Start rx_hardware_thread %d\n", id);
-
-    while (1) {
-        sleep(1);
-    }
-
     return NULL;
 }

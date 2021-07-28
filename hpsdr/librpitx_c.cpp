@@ -8,42 +8,52 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "librpitx.h"
-#include "circular_queue.h"
+#include "hpsdr_main.h"
 
-#define IQBURST 4000
+#define IQBURST 1000
+#define OLDRTXLEN 64512
 
 static int Decimation = 1;
 int Harmonic = 1;
+int rp_txptr = 0;
 
 iqdmasync *iqsender = NULL;
 std::complex<float> CIQBuffer[IQBURST];
 
-void rpitx_iq_init(int SampleRate, float SetFrequency) {
-    iqsender = new iqdmasync(SetFrequency, SampleRate, 14, IQBURST * 4, MODE_IQ);
+void rpitx_iq_init(int SampleRate, float SetFrequency, int txptr) {
+	rp_txptr = txptr;
+	iqsender = new iqdmasync(SetFrequency * 1e3, SampleRate, 14, IQBURST * 4,
+			MODE_IQ);
+	iqsender->Setppm(0);
 }
 
 void rpitx_iq_deinit(void) {
-    if (iqsender != NULL)
-        delete (iqsender);
+	if (iqsender != NULL)
+		delete (iqsender);
 }
 
-void rpitx_iq_send(double *isample, double *qsample) {
-    int CplxSampleNumber = 0;
+void rpitx_iq_send(struct samples_t *iqsamples_tx, int *enable) {
+	int CplxSampleNumber = 0;
+	rp_txptr = iqsamples_tx->txptr;
+	while (1) {
+		CplxSampleNumber = 0;
+		for (int i = 0; i < IQBURST; i++) {
+			if (i % Decimation == 0) {
+				CIQBuffer[CplxSampleNumber++] = std::complex<float>(
+						(float) iqsamples_tx->isample[rp_txptr],
+						(float) iqsamples_tx->qsample[rp_txptr]);
+				rp_txptr++;
+			}
+		}
+		iqsender->SetIQSamples(CIQBuffer, CplxSampleNumber, Harmonic);
 
-    static double IBuffer[IQBURST];
-    static double QBuffer[IQBURST];
+		if (rp_txptr >= OLDRTXLEN)
+			rp_txptr = 0;
 
-    int nbread = cq_dequeue_buf(isample, IBuffer, IQBURST);
-    cq_dequeue_buf(qsample, QBuffer, IQBURST);
-
-    if (nbread > 0) {
-        for (int i = 0; i < nbread ; i++) {
-            if (i % Decimation == 0) {
-                CIQBuffer[CplxSampleNumber++] = std::complex<float>((float)IBuffer[i], (float)QBuffer[i]);
-
-            }
-        }
-    }
-
-    iqsender->SetIQSamples(CIQBuffer, CplxSampleNumber, Harmonic);
+		if (!*enable) {
+			printf("... STOP transmitting");
+			break;
+		}
+		//iqsender->SetIQSamples(CIQBuffer, CplxSampleNumber, Harmonic);
+	}
 }

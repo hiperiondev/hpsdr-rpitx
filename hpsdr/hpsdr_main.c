@@ -70,6 +70,8 @@
 #include "hpsdr_debug.h"
 #include "hpsdr_functions.h"
 #include "hpsdr_definitions.h"
+#include "hpsdr_newprotocol.h"
+#include "librpitx_c.h"
 
 // These variables store the state of the "old protocol" SDR.
 // When every they are changed, this is reported.
@@ -143,18 +145,25 @@ static int sock_udp;
 // These two variables monitor whether the TX thread is active
 static int enable_thread = 0;
 static int active_thread = 0;
+pthread_t tx_hardware_thread_id;
 
+void* tx_hardware_thread(void *data);
 static void process_ep2(uint8_t *frame);
 static void* handler_ep6(void *arg);
 
 static double last_i_sample = 0.0;
 static double last_q_sample = 0.0;
-static int txptr = 0;
+//static  = 0;
 static int rx_print = 0;
 static int tx_print = 0;
 static int oldnew = 3;    // 1: only P1, 2: only P2, 3: P1 and P2,
 
 static double txlevel;
+
+// Address where to send packets from the old and new protocol
+// to the PC
+struct sockaddr_in addr_new;
+struct sockaddr_in addr_old;
 
 int main(int argc, char *argv[]) {
     int i, j, size;
@@ -372,8 +381,8 @@ int main(int argc, char *argv[]) {
     }
 
     // clear TX fifo
-    memset(isample, 0, OLDRTXLEN * sizeof(double));
-    memset(qsample, 0, OLDRTXLEN * sizeof(double));
+    memset(iqsamples.isample, 0, OLDRTXLEN * sizeof(double));
+    memset(iqsamples.qsample, 0, OLDRTXLEN * sizeof(double));
 
     if ((sock_udp = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
         dbg_printf(1, "socket");
@@ -425,6 +434,8 @@ int main(int argc, char *argv[]) {
 
     int flags = fcntl(sock_TCP_Server, F_GETFL, 0);
     fcntl(sock_TCP_Server, F_SETFL, flags | O_NONBLOCK);
+
+    new_protocol_init(addr_new, addr_old);
 
     while (1) {
         memcpy(buffer, id, 4);
@@ -557,48 +568,48 @@ int main(int argc, char *argv[]) {
 
                     switch (rate) {
                     case 0:  // RX sample rate = TX sample rate = 48000
-                        isample[txptr] = disample;
-                        qsample[txptr++] = dqsample;
+                    	iqsamples.isample[iqsamples.txptr] = disample;
+                    	iqsamples.qsample[iqsamples.txptr++] = dqsample;
                         break;
                     case 1:  // RX sample rate = 96000; TX sample rate = 48000
                         idelta = 0.5 * (disample - last_i_sample);
                         qdelta = 0.5 * (dqsample - last_q_sample);
-                        isample[txptr] = last_i_sample + idelta;
-                        qsample[txptr++] = last_q_sample + qdelta;
-                        isample[txptr] = disample;
-                        qsample[txptr++] = dqsample;
+                        iqsamples.isample[iqsamples.txptr] = last_i_sample + idelta;
+                        iqsamples.qsample[iqsamples.txptr++] = last_q_sample + qdelta;
+                        iqsamples.isample[iqsamples.txptr] = disample;
+                        iqsamples.qsample[iqsamples.txptr++] = dqsample;
                         break;
                     case 2:  // RX sample rate = 192000; TX sample rate = 48000
                         idelta = 0.25 * (disample - last_i_sample);
                         qdelta = 0.25 * (dqsample - last_q_sample);
-                        isample[txptr] = last_i_sample + idelta;
-                        qsample[txptr++] = last_q_sample + qdelta;
-                        isample[txptr] = last_i_sample + 2.0 * idelta;
-                        qsample[txptr++] = last_q_sample + 2.0 * qdelta;
-                        isample[txptr] = last_i_sample + 3.0 * idelta;
-                        qsample[txptr++] = last_q_sample + 3.0 * qdelta;
-                        isample[txptr] = disample;
-                        qsample[txptr++] = dqsample;
+                        iqsamples.isample[iqsamples.txptr] = last_i_sample + idelta;
+                        iqsamples.qsample[iqsamples.txptr++] = last_q_sample + qdelta;
+                        iqsamples.isample[iqsamples.txptr] = last_i_sample + 2.0 * idelta;
+                        iqsamples.qsample[iqsamples.txptr++] = last_q_sample + 2.0 * qdelta;
+                        iqsamples.isample[iqsamples.txptr] = last_i_sample + 3.0 * idelta;
+                        iqsamples.qsample[iqsamples.txptr++] = last_q_sample + 3.0 * qdelta;
+                        iqsamples.isample[iqsamples.txptr] = disample;
+                        iqsamples.qsample[iqsamples.txptr++] = dqsample;
                         break;
                     case 3:  // RX sample rate = 384000; TX sample rate = 48000
                         idelta = 0.125 * (disample - last_i_sample);
                         qdelta = 0.125 * (dqsample - last_q_sample);
-                        isample[txptr] = last_i_sample + idelta;
-                        qsample[txptr++] = last_q_sample + qdelta;
-                        isample[txptr] = last_i_sample + 2.0 * idelta;
-                        qsample[txptr++] = last_q_sample + 2.0 * qdelta;
-                        isample[txptr] = last_i_sample + 3.0 * idelta;
-                        qsample[txptr++] = last_q_sample + 3.0 * qdelta;
-                        isample[txptr] = last_i_sample + 4.0 * idelta;
-                        qsample[txptr++] = last_q_sample + 4.0 * qdelta;
-                        isample[txptr] = last_i_sample + 5.0 * idelta;
-                        qsample[txptr++] = last_q_sample + 5.0 * qdelta;
-                        isample[txptr] = last_i_sample + 6.0 * idelta;
-                        qsample[txptr++] = last_q_sample + 6.0 * qdelta;
-                        isample[txptr] = last_i_sample + 7.0 * idelta;
-                        qsample[txptr++] = last_q_sample + 7.0 * qdelta;
-                        isample[txptr] = disample;
-                        qsample[txptr++] = dqsample;
+                        iqsamples.isample[iqsamples.txptr] = last_i_sample + idelta;
+                        iqsamples.qsample[iqsamples.txptr++] = last_q_sample + qdelta;
+                        iqsamples.isample[iqsamples.txptr] = last_i_sample + 2.0 * idelta;
+                        iqsamples.qsample[iqsamples.txptr++] = last_q_sample + 2.0 * qdelta;
+                        iqsamples.isample[iqsamples.txptr] = last_i_sample + 3.0 * idelta;
+                        iqsamples.qsample[iqsamples.txptr++] = last_q_sample + 3.0 * qdelta;
+                        iqsamples.isample[iqsamples.txptr] = last_i_sample + 4.0 * idelta;
+                        iqsamples.qsample[iqsamples.txptr++] = last_q_sample + 4.0 * qdelta;
+                        iqsamples.isample[iqsamples.txptr] = last_i_sample + 5.0 * idelta;
+                        iqsamples.qsample[iqsamples.txptr++] = last_q_sample + 5.0 * qdelta;
+                        iqsamples.isample[iqsamples.txptr] = last_i_sample + 6.0 * idelta;
+                        iqsamples.qsample[iqsamples.txptr++] = last_q_sample + 6.0 * qdelta;
+                        iqsamples.isample[iqsamples.txptr] = last_i_sample + 7.0 * idelta;
+                        iqsamples.qsample[iqsamples.txptr++] = last_q_sample + 7.0 * qdelta;
+                        iqsamples.isample[iqsamples.txptr] = disample;
+                        iqsamples.qsample[iqsamples.txptr++] = dqsample;
                         break;
                     }
 
@@ -610,8 +621,8 @@ int main(int argc, char *argv[]) {
                 }
                 txlevel = txdrv_dbl * txdrv_dbl * sum * 0.0079365;
                 // wrap-around of ring buffer
-                if (txptr >= OLDRTXLEN)
-                    txptr = 0;
+                if (iqsamples.txptr >= OLDRTXLEN)
+                    iqsamples.txptr = 0;
 
                 //if(tx_print && disample !=0 && dqsample != 0)
                 //	dbg_printf(1, "[disample:%f dqsample:%f]", disample, dqsample);
@@ -707,23 +718,31 @@ int main(int argc, char *argv[]) {
             addr_old.sin_port = addr_from.sin_port;
 
             //
-            // The initial value of txptr defines the delay between
+            // The initial value of iqsamples.txptr defines the delay between
             // TX samples sent to the SDR and PURESIGNAL feedback
             // samples arriving
             //
-            txptr = OLDRTXLEN / 2;
-            memset(isample, 0, OLDRTXLEN * sizeof(double));
-            memset(qsample, 0, OLDRTXLEN * sizeof(double));
+            iqsamples.txptr = OLDRTXLEN / 2;
+            memset(iqsamples.isample, 0, OLDRTXLEN * sizeof(double));
+            memset(iqsamples.qsample, 0, OLDRTXLEN * sizeof(double));
             enable_thread = 1;
             active_thread = 1;
+
             if (pthread_create(&thread, NULL, handler_ep6, NULL) < 0) {
-                dbg_printf(1, "create old protocol thread");
+                dbg_printf(1, "ERROR: create old protocol thread");
                 return EXIT_FAILURE;
             }
             pthread_detach(thread);
-            break;
 
-        default:
+			if (pthread_create(&tx_hardware_thread_id, NULL, tx_hardware_thread, (void*) (&iqsamples)) < 0) {
+				dbg_printf(1, "ERROR: create tx_hardware_thread");
+				return EXIT_FAILURE;
+			}
+			pthread_detach (thread);
+
+			break;
+
+		default:
              // Here we have to handle the following "non standard" cases:
              // OldProtocol "program"   packet
              // OldProtocol "erase"     packet
@@ -1166,10 +1185,10 @@ void* handler_ep6(void *arg) {
     toneIQpt = 0;
     divpt = 0;
 
-    // The rxptr should never "overtake" the txptr, but
+    // The rxptr should never "overtake" the iqsamples.txptr, but
     // it also must not lag behind by too much. Let's take
     // the typical TX FIFO size
-    rxptr = txptr - 4096;
+    rxptr = iqsamples.txptr - 4096;
     if (rxptr < 0)
         rxptr += OLDRTXLEN;
 
@@ -1210,7 +1229,7 @@ void* handler_ep6(void *arg) {
                 // do not set ADC overflow in C1
                 if (OLDDEVICE == DEVICE_HERMES_LITE2) {
                     // C2/C3 is TX FIFO count
-                    tx_fifo_count = txptr - rxptr;
+                    tx_fifo_count = iqsamples.txptr - rxptr;
                     if (tx_fifo_count < 0)
                         tx_fifo_count += OLDRTXLEN;
                     *(pointer + 5) = (tx_fifo_count >> 8) & 0x7F;
@@ -1262,8 +1281,8 @@ void* handler_ep6(void *arg) {
             for (j = 0; j < n; j++) {
                 // ADC1: noise + weak tone on RX, feedback sig. on TX (except STEMlab)
                 if (ptt && (OLDDEVICE != DEVICE_C25)) {
-                    i1 = isample[rxptr] * txdrv_dbl;
-                    q1 = qsample[rxptr] * txdrv_dbl;
+                    i1 = iqsamples.isample[rxptr] * txdrv_dbl;
+                    q1 = iqsamples.qsample[rxptr] * txdrv_dbl;
                     fac3 = IM3a + IM3b * (i1 * i1 + q1 * q1);
                     adc1isample = (txatt_dbl * i1 * fac3 + noiseItab[noiseIQpt]) * 8388607.0;
                     adc1qsample = (txatt_dbl * q1 * fac3 + noiseItab[noiseIQpt]) * 8388607.0;
@@ -1277,8 +1296,8 @@ void* handler_ep6(void *arg) {
                 }
                 // ADC2: noise RX, feedback sig. on TX (only STEMlab)
                 if (ptt && (OLDDEVICE == DEVICE_C25)) {
-                    i1 = isample[rxptr] * txdrv_dbl;
-                    q1 = qsample[rxptr] * txdrv_dbl;
+                    i1 = iqsamples.isample[rxptr] * txdrv_dbl;
+                    q1 = iqsamples.qsample[rxptr] * txdrv_dbl;
                     fac3 = IM3a + IM3b * (i1 * i1 + q1 * q1);
                     adc2isample = (txatt_dbl * i1 * fac3 + noiseItab[noiseIQpt]) * 8388607.0;
                     adc2qsample = (txatt_dbl * q1 * fac3 + noiseItab[noiseIQpt]) * 8388607.0;
@@ -1293,11 +1312,11 @@ void* handler_ep6(void *arg) {
 
                 // TX signal with peak=0.407
                 if (OLDDEVICE == DEVICE_HERMES_LITE2) {
-                    dacisample = isample[rxptr] * 0.230 * 8388607.0;
-                    dacqsample = qsample[rxptr] * 0.230 * 8388607.0;
+                    dacisample = iqsamples.isample[rxptr] * 0.230 * 8388607.0;
+                    dacqsample = iqsamples.qsample[rxptr] * 0.230 * 8388607.0;
                 } else {
-                    dacisample = isample[rxptr] * 0.407 * 8388607.0;
-                    dacqsample = qsample[rxptr] * 0.407 * 8388607.0;
+                    dacisample = iqsamples.isample[rxptr] * 0.407 * 8388607.0;
+                    dacqsample = iqsamples.qsample[rxptr] * 0.407 * 8388607.0;
                 }
 
                 for (k = 0; k < receivers; k++) {
@@ -1375,6 +1394,26 @@ void* handler_ep6(void *arg) {
         }
     }
     active_thread = 0;
-    dbg_printf(1, "< Stop handler_ep6 >\n");
+    dbg_printf(1, "<Stop handler_ep6 >\n");
     return NULL;
+}
+
+void* tx_hardware_thread(void *data) {
+    dbg_printf(1, "<Start tx_hardware_thread>\n");
+
+    struct samples_t *iqsamples_tx = (struct samples_t *)data;
+
+    //rpitx_iq_init(48000,  tx_freq);
+    rpitx_iq_init(48000,  147360, iqsamples_tx->txptr);
+
+	while (1) {
+		if (!enable_thread)
+			break;
+		rpitx_iq_send(iqsamples_tx, &enable_thread);
+		//	sleep(1);
+	}
+
+	rpitx_iq_deinit();
+	dbg_printf(1, "<Stop tx_hardware_thread>\n");
+	return NULL;
 }

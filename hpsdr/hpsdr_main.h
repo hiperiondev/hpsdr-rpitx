@@ -14,8 +14,12 @@
 #ifndef _HPSDRSIM_H_
 #define _HPSDRSIM_H_
 
-EXTERN int OLDDEVICE;
-EXTERN int NEWDEVICE;
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+int OLDDEVICE;
+int NEWDEVICE;
 
 // A table of (random) noise with about -90 dBm on the whole spectrum
 // This is a very long table such that there is no audible "beating"
@@ -23,21 +27,21 @@ EXTERN int NEWDEVICE;
 #define LENNOISE 1536000
 #define NOISEDIV (RAND_MAX / 768000)
 
-EXTERN double noiseItab[LENNOISE];
-EXTERN double noiseQtab[LENNOISE];
+double noiseItab[LENNOISE];
+double noiseQtab[LENNOISE];
 
 // A table of (man made) noise fed to the I samples of ADC0
 // and to the Q samples of ADC1, such that it can be eliminated
 // using DIVERSITY
-EXTERN int diversity;
+int diversity;
 
 #define LENDIV 16000
-EXTERN double divtab[LENDIV];
+double divtab[LENDIV];
 
 // An 800-Hz tone with 0 dBm
 #define LENTONE 15360
-EXTERN double toneItab[LENTONE];
-EXTERN double toneQtab[LENTONE];
+double toneItab[LENTONE];
+double toneQtab[LENTONE];
 
 // TX fifo (needed for PURESIGNAL)
 
@@ -52,16 +56,20 @@ EXTERN double toneQtab[LENTONE];
 // 240 not exceeding RTXLEN
 #define OLDRTXLEN 64512 // must be larger than NEWRTXLEN
 #define NEWRTXLEN 64320
-EXTERN double isample[OLDRTXLEN];
-EXTERN double qsample[OLDRTXLEN];
 
-// Address where to send packets from the old and new protocol
-// to the PC
-EXTERN struct sockaddr_in addr_new;
-EXTERN struct sockaddr_in addr_old;
+struct samples_t {
+	double isample[OLDRTXLEN];
+	double qsample[OLDRTXLEN];
+	int txptr;
+};
+
+struct samples_t iqsamples;
 
 // Constants for conversion of TX power
-EXTERN double c1, c2;
+double c1, c2;
+
+pthread_t tx_hardware_thread_id;
+void* tx_hardware_thread(void*);
 
 // Forward declaration for the debug data
 void data_print(char* prfx, double l, double r);
@@ -78,5 +86,9 @@ extern int clock_nanosleep(clockid_t __clock_id, int __flags, __const struct tim
 // about the value a reasonable amp gives.
 #define IM3a  0.60
 #define IM3b  0.20
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
