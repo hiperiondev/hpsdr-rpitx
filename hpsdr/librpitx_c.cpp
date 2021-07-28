@@ -10,7 +10,7 @@
 #include "librpitx.h"
 #include "hpsdr_main.h"
 
-#define IQBURST 1000
+#define IQBURST 10
 #define OLDRTXLEN 64512
 
 static int Decimation = 1;
@@ -36,7 +36,12 @@ void rpitx_iq_send(struct samples_t *iqsamples_tx, int *enable) {
 	int CplxSampleNumber = 0;
 	rp_txptr = iqsamples_tx->txptr;
 	while (1) {
+
+		if (rp_txptr > iqsamples_tx->txptr)
+			rp_txptr = iqsamples_tx->txptr;
+
 		CplxSampleNumber = 0;
+
 		for (int i = 0; i < IQBURST; i++) {
 			if (i % Decimation == 0) {
 				CIQBuffer[CplxSampleNumber++] = std::complex<float>(
@@ -47,13 +52,9 @@ void rpitx_iq_send(struct samples_t *iqsamples_tx, int *enable) {
 		}
 		iqsender->SetIQSamples(CIQBuffer, CplxSampleNumber, Harmonic);
 
-		if (rp_txptr >= OLDRTXLEN)
-			rp_txptr = 0;
-
 		if (!*enable) {
 			printf("... STOP transmitting");
 			break;
 		}
-		//iqsender->SetIQSamples(CIQBuffer, CplxSampleNumber, Harmonic);
 	}
 }
