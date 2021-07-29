@@ -2,7 +2,7 @@
  * hpsdr_oldprotocol.h
  *
  *  Created on: 29 jul. 2021
- *      Author: egonzalez
+ *      Author: Emiliano Gonzalez LU3VEA (lu3vea @ gmail . com))
  */
 
 #ifndef HPSDR_OLDPROTOCOL_H_

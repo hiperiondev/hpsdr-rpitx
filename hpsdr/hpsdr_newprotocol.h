@@ -2,7 +2,7 @@
  * hpsdr_newprotocol.h
  *
  *  Created on: 28 jul. 2021
- *      Author: egonzalez
+ *      Author: Emiliano Gonzalez LU3VEA (lu3vea @ gmail . com))
  */
 
 #ifndef HPSDR_NEWPROTOCOL_H_

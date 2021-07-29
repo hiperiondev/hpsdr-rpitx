@@ -20,7 +20,7 @@ iqdmasync *iqsender = NULL;
 std::complex<float> CIQBuffer[IQBURST];
 
 void rpitx_iq_init(int SampleRate, float SetFrequency) {
-	iqsender = new iqdmasync(SetFrequency * 1e3, SampleRate, 14, IQBURST * 4, MODE_IQ);
+	iqsender = new iqdmasync(SetFrequency, SampleRate, 14, IQBURST * 4, MODE_IQ);
 	iqsender->Setppm(0);
 }
 

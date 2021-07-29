@@ -2,13 +2,11 @@
  * librpitx_c_wrapper.h
  *
  *  Created on: 18 jul. 2021
- *      Author: egonzalez
+ *      Author: Emiliano Gonzalez LU3VEA (lu3vea @ gmail . com))
  */
 
 #ifndef LIBRPITX_C_WRAPPER_H_
 #define LIBRPITX_C_WRAPPER_H_
-
-#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {

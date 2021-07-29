@@ -1,3 +1,11 @@
+/*
+ * hpsdr_functions.h
+ *
+ *  Created on: 18 jul. 2021
+ *      Author: Emiliano Gonzalez LU3VEA (lu3vea @ gmail . com))
+ */
+
+
 #ifndef HPSDR_FUNCTIONS_H_
 #define HPSDR_FUNCTIONS_H_
 

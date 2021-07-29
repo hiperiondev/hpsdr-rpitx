@@ -1,15 +1,9 @@
-//
-// hpsdrsim.h, define global data
-//
-// From the main program, this is included with EXTERN="", while
-// other modules include is with "EXTERN=extern".
-//
-///////////////////////////////////////////////////////////////////////////
-//
-// The 800-Hz tone and the "man made noise" are for a sample rate of
-// 1536 kHz, and must be decimated when using smaller sample rates
-//
-///////////////////////////////////////////////////////////////////////////
+/*
+ * hpsdr_main.h
+ *
+ *  Created on: 18 jul. 2021
+ *      Author: Emiliano Gonzalez LU3VEA (lu3vea @ gmail . com))
+ */
 
 #ifndef _HPSDRSIM_H_
 #define _HPSDRSIM_H_
@@ -80,6 +74,8 @@ struct samples_t {
 	int txptr;
 };
 struct samples_t iqsamples;
+
+float TX_Frequency;
 
 // Constants for conversion of TX power
 double c1, c2;

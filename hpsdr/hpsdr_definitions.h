@@ -1,5 +1,8 @@
 /*
+ * hpsdr_definitions.h
  *
+ *  Created on: 18 jul. 2021
+ *      Author: Emiliano Gonzalez LU3VEA (lu3vea @ gmail . com))
  */
 
 #ifndef HPSDR_DEFINITIONS_H_

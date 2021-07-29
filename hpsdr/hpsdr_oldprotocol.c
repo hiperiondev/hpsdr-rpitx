@@ -2,7 +2,7 @@
  * hpsdr_oldprotocol.c
  *
  *  Created on: 29 jul. 2021
- *      Author: egonzalez
+ *      Author: Emiliano Gonzalez LU3VEA (lu3vea @ gmail . com))
  */
 
 #include <stdint.h>
@@ -269,7 +269,7 @@ void op_process_ep2(uint8_t *frame) {
             op_settings.LTrandom = rc;
         }
         if (mod)
-            dbg_printf(1, "AlexAtt=%d Preamp=%d Dither=%d Random=%d\n", op_settings.AlexAtt, op_settings.preamp, op_settings.LTdither, op_settings.LTrandom);
+            hpsdr_dbg_printf(1, "AlexAtt=%d Preamp=%d Dither=%d Random=%d\n", op_settings.AlexAtt, op_settings.preamp, op_settings.LTdither, op_settings.LTrandom);
 
         mod = 0;
         rc = (frame[3] & 0x60) >> 5;
@@ -293,7 +293,7 @@ void op_process_ep2(uint8_t *frame) {
             op_settings.duplex = rc;
         }
         if (mod)
-            dbg_printf(1, "RXout=%d RXant=%d TXrel=%d Duplex=%d\n", op_settings.alexRXout, op_settings.alexRXant, op_settings.AlexTXrel, op_settings.duplex);
+            hpsdr_dbg_printf(1, "RXout=%d RXant=%d TXrel=%d Duplex=%d\n", op_settings.alexRXout, op_settings.alexRXant, op_settings.AlexTXrel, op_settings.duplex);
 
         if (OLDDEVICE == DEVICE_C25) {
             // Charly25: has two 18-dB preamps that are switched with "preamp" and "dither"
@@ -460,7 +460,7 @@ void op_process_ep2(uint8_t *frame) {
 }
 
 void* op_handler_ep6(void *arg) {
-    dbg_printf(1, "< Start handler_ep6 >\n");
+    hpsdr_dbg_printf(1, "< Start handler_ep6 >\n");
     int i, j, k, n, size;
     int header_offset;
     uint32_t counter;
@@ -707,13 +707,13 @@ void* op_handler_ep6(void *arg) {
 
         if (sock_TCP_Client > -1) {
             if (sendto(sock_TCP_Client, buffer, 1032, 0, (struct sockaddr*) &addr_old, sizeof(addr_old)) < 0) {
-                dbg_printf(1, "TCP sendmsg error occurred at sequence number: %u !\n", counter);
+                hpsdr_dbg_printf(1, "TCP sendmsg error occurred at sequence number: %u !\n", counter);
             }
         } else {
             sendto(sock_udp, buffer, 1032, 0, (struct sockaddr*) &addr_old, sizeof(addr_old));
         }
     }
     active_thread = 0;
-    dbg_printf(1, "<Stop handler_ep6 >\n");
+    hpsdr_dbg_printf(1, "<Stop handler_ep6 >\n");
     return NULL;
 }

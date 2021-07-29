@@ -1,51 +1,10 @@
 /*
- * HPSDR simulator, (C) Christoph van Wuellen, April/May 2019
+ * hpsdr_main.c
  *
- * This program simulates a HPSDR board.
- * If an SDR program such as phipsdr "connects" with this program, it
- * writes to stdout what goes on. This is great for debugging.
- *
- * In addition, I have built in the following features:
- *
- * This device has four "RF sources"
- *
- * RF1: ADC noise plus a  800 Hz signal plus 5000 Hz signal at -73dBm
- * RF2: ADC noise
- * RF3: TX feedback signal with some distortion.
- * RF4: normalized undistorted TX signal
- *
- * RF1 and RF2 signal strenght vary according to Preamp and Attenuator settings
- * RF3 signal strength varies according to TX-drive and TX-ATT settings
- * RF4 signal strength is normalized to amplitude of 0.407 (old protocol) or 0.2899 (new protocol)
- *     note HERMESLITEV2 old protocol: 0.23
- *
- * The connection with the ADCs are:
- * ADC0: RF1 upon receive, RF3 upon transmit
- * ADC1: RF2 (for HERMES: RF4)
- * ADC2: RF4
- *
- * RF4 is the TX DAC signal. Upon TX, it goes to RX2 for Metis, RX4 for Hermes, and RX5 beyond.
- * Since the feedback runs at the RX sample rate while the TX sample rate is fixed (48000 Hz),
- * we have to re-sample and do this in a very stupid way (linear interpolation).
- *
- * The "noise" is a random number of amplitude 0.00003 (last bit on a 16-bit ADC),
- * that is about -90 dBm spread onto a spectrum whose width is the sample rate. Therefore
- * the "measured" noise floor in a filter 5 kHz wide is -102 dBm for a sample rate of 48 kHz
- * but -111 dBm for a sample rate of 384000 kHz. This is a nice demonstration how the
- * spectral density of "ADC noise" goes down when increasing the sample rate.
- *
- * The SDR application has to make the proper ADC settings, except for STEMlab
- * (RedPitaya based SDRs), where there is a fixed association
- * RX1=ADC1, RX2=ADC2, RX3=ADC2, RX4=TX-DAC
- * and the PURESIGNAL feedback signal is connected to the second ADC.
- *
- * Audio sent to the "radio" is played via the first available output channel.
- * This works on MacOS (PORTAUDIO) and Linux (ALSASOUND).
- *
- * If invoked with the "-diversity" flag, broad "man-made" noise is fed to ADC1 and
- * ADC2 upon RXing. The ADC2 signal is phase shifted by 90 degrees and somewhat
- * stronger. This noise can completely be eliminated using DIVERSITY.
+ *  Created on: 18 jul. 2021
+ *      Author: Emiliano Gonzalez LU3VEA (lu3vea @ gmail . com))
  */
+
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -131,7 +90,7 @@ int main(int argc, char *argv[]) {
         }
 
         if (!strncmp(argv[i], "-hermes", 7)) {
-            dbg_printf(1, "HERMES\n");
+            hpsdr_dbg_printf(1, "HERMES\n");
             OLDDEVICE = DEVICE_HERMES;
             NEWDEVICE = NEW_DEVICE_HERMES;
         }
@@ -183,16 +142,8 @@ int main(int argc, char *argv[]) {
             oldnew = 2;
         }
 
-        //if (!strncmp(argv[i], "-debugtx", 6)) {
-        //    tx_print = 1;
-        //}
-
-        //if (!strncmp(argv[i], "-debugrx", 6)) {
-        //    rx_print = 1;
-        //}
-
         if (!strncmp(argv[i], "-debug", 3)) {
-            dbg_setlevel(1);
+            hpsdr_dbg_setlevel(1);
         }
 
         /*
@@ -220,54 +171,54 @@ int main(int argc, char *argv[]) {
 
     switch (OLDDEVICE) {
     case DEVICE_METIS:
-        dbg_printf(1, "DEVICE is METIS\n");
+        hpsdr_dbg_printf(1, "DEVICE is METIS\n");
         c1 = 3.3;
         c2 = 0.090;
         break;
     case DEVICE_HERMES:
-        dbg_printf(1, "DEVICE is HERMES\n");
+        hpsdr_dbg_printf(1, "DEVICE is HERMES\n");
         c1 = 3.3;
         c2 = 0.095;
         break;
     case DEVICE_GRIFFIN:
-        dbg_printf(1, "DEVICE is GRIFFIN\n");
+        hpsdr_dbg_printf(1, "DEVICE is GRIFFIN\n");
         c1 = 3.3;
         c2 = 0.095;
         break;
     case DEVICE_ANGELIA:
-        dbg_printf(1, "DEVICE is ANGELIA\n");
+        hpsdr_dbg_printf(1, "DEVICE is ANGELIA\n");
         c1 = 3.3;
         c2 = 0.095;
         break;
     case DEVICE_HERMES_LITE:
-        dbg_printf(1, "DEVICE is HermesLite V1\n");
+        hpsdr_dbg_printf(1, "DEVICE is HermesLite V1\n");
         c1 = 3.3;
         c2 = 0.095;
         break;
     case DEVICE_HERMES_LITE2:
-        dbg_printf(1, "DEVICE is HermesLite V2\n");
+        hpsdr_dbg_printf(1, "DEVICE is HermesLite V2\n");
         c1 = 3.3;
         c2 = 0.095;
         break;
     case DEVICE_ORION:
-        dbg_printf(1, "DEVICE is ORION\n");
+        hpsdr_dbg_printf(1, "DEVICE is ORION\n");
         c1 = 5.0;
         c2 = 0.108;
         break;
     case DEVICE_ORION2:
-        dbg_printf(1, "DEVICE is ORION MkII\n");
+        hpsdr_dbg_printf(1, "DEVICE is ORION MkII\n");
         c1 = 5.0;
         c2 = 0.108;
         break;
     case DEVICE_C25:
-        dbg_printf(1, "DEVICE is STEMlab/C25\n");
+        hpsdr_dbg_printf(1, "DEVICE is STEMlab/C25\n");
         c1 = 3.3;
         c2 = 0.090;
         break;
     }
 
     // Initialize the data in the sample tables
-    dbg_printf(1, ".... producing random noise\n");
+    hpsdr_dbg_printf(1, ".... producing random noise\n");
     // Produce some noise
     j = RAND_MAX / 2;
     for (i = 0; i < LENNOISE; i++) {
@@ -275,7 +226,7 @@ int main(int argc, char *argv[]) {
         noiseQtab[i] = ((double) rand_r(&seed) / j - 1.0) * 0.00003;
     }
 
-    dbg_printf(1, ".... producing signals\n");
+    hpsdr_dbg_printf(1, ".... producing signals\n");
     // Produce an 800 Hz tone at 0 dBm
     run = 0.0;
     off = 0.0;
@@ -287,8 +238,8 @@ int main(int argc, char *argv[]) {
     }
 
     if (diversity) {
-        dbg_printf(1, "DIVERSITY testing activated!\n");
-        dbg_printf(1, ".... producing some man-made noise\n");
+        hpsdr_dbg_printf(1, "DIVERSITY testing activated!\n");
+        hpsdr_dbg_printf(1, ".... producing some man-made noise\n");
         memset(divtab, 0, LENDIV * sizeof(double));
         for (j = 1; j <= 200; j++) {
             run = 0.0;
@@ -308,7 +259,7 @@ int main(int argc, char *argv[]) {
                 off = -divtab[i];
         }
         off = 1.0 / off;
-        dbg_printf(1, "(normalizing with %f)\n", off);
+        hpsdr_dbg_printf(1, "(normalizing with %f)\n", off);
         for (i = 0; i < LENDIV; i++) {
             divtab[i] = divtab[i] * off;
         }
@@ -319,7 +270,7 @@ int main(int argc, char *argv[]) {
     memset(iqsamples.qsample, 0, OLDRTXLEN * sizeof(double));
 
     if ((sock_udp = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-        dbg_printf(1, "socket");
+        hpsdr_dbg_printf(1, "socket");
         return EXIT_FAILURE;
     }
 
@@ -336,12 +287,12 @@ int main(int argc, char *argv[]) {
     addr_udp.sin_port = htons(1024);
 
     if (bind(sock_udp, (struct sockaddr*) &addr_udp, sizeof(addr_udp)) < 0) {
-        dbg_printf(1, "bind");
+        hpsdr_dbg_printf(1, "bind");
         return EXIT_FAILURE;
     }
 
     if ((sock_TCP_Server = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        dbg_printf(1, "socket tcp");
+        hpsdr_dbg_printf(1, "socket tcp");
         return EXIT_FAILURE;
     }
 
@@ -359,12 +310,12 @@ int main(int argc, char *argv[]) {
     setsockopt(sock_TCP_Server, SOL_SOCKET, SO_RCVTIMEO, (void*) &tv, sizeof(tv));
 
     if (bind(sock_TCP_Server, (struct sockaddr*) &addr_udp, sizeof(addr_udp)) < 0) {
-        dbg_printf(1, "bind tcp");
+        hpsdr_dbg_printf(1, "bind tcp");
         return EXIT_FAILURE;
     }
 
     listen(sock_TCP_Server, 1024);
-    dbg_printf(1, "Listening for TCP client connection request\n");
+    hpsdr_dbg_printf(1, "Listening for TCP client connection request\n");
 
     int flags = fcntl(sock_TCP_Server, F_GETFL, 0);
     fcntl(sock_TCP_Server, F_SETFL, flags | O_NONBLOCK);
@@ -428,7 +379,7 @@ int main(int argc, char *argv[]) {
         }
 
         if (bytes_read < 0 && errno != EAGAIN) {
-            dbg_printf(1, "recvfrom");
+            hpsdr_dbg_printf(1, "recvfrom");
             return EXIT_FAILURE;
         }
 
@@ -436,7 +387,7 @@ int main(int argc, char *argv[]) {
         // "for some time" means 10 subsequent un-successful UDP rcvmmsg() calls
         if (sock_TCP_Client < 0 && udp_retries > 10) {
             if ((sock_TCP_Client = accept(sock_TCP_Server, NULL, NULL)) > -1) {
-                dbg_printf(1, "sock_TCP_Client: %d connected to sock_TCP_Server: %d\n", sock_TCP_Client, sock_TCP_Server);
+                hpsdr_dbg_printf(1, "sock_TCP_Client: %d connected to sock_TCP_Server: %d\n", sock_TCP_Client, sock_TCP_Server);
             }
             // This avoids firing accept() too often if it constantly fails
             udp_retries = 0;
@@ -445,14 +396,14 @@ int main(int argc, char *argv[]) {
             continue;
         memcpy(&code, buffer, 4);
 
-        dbg_printf(2, "-- code received: %04x (%d)\n", code, code);
+        hpsdr_dbg_printf(2, "-- code received: %04x (%d)\n", code, code);
 
         switch (code) {
         // PC to SDR transmission via process_ep2
         case 0x0201feef:
             // processing an invalid packet is too dangerous -- skip it!
             if (bytes_read != 1032) {
-                dbg_printf(1, "InvalidLength: RvcMsg Code=0x%08x Len=%d\n", code, (int) bytes_read);
+                hpsdr_dbg_printf(1, "InvalidLength: RvcMsg Code=0x%08x Len=%d\n", code, (int) bytes_read);
                 break;
             }
 
@@ -460,7 +411,7 @@ int main(int argc, char *argv[]) {
             seqnum = ((buffer[4] & 0xFF) << 24) + ((buffer[5] & 0xFF) << 16) + ((buffer[6] & 0xFF) << 8) + (buffer[7] & 0xFF);
 
             if (seqnum != last_seqnum + 1) {
-                dbg_printf(1, "SEQ ERROR: last %ld, recvd %ld\n", (long) last_seqnum, (long) seqnum);
+                hpsdr_dbg_printf(1, "SEQ ERROR: last %ld, recvd %ld\n", (long) last_seqnum, (long) seqnum);
             }
 
             last_seqnum = seqnum;
@@ -476,15 +427,15 @@ int main(int argc, char *argv[]) {
             // respond to an incoming Metis detection request
         case 0x0002feef:
             if (oldnew == 2) {
-                dbg_printf(1, "OldProtocol detection request IGNORED.\n");
+                hpsdr_dbg_printf(1, "OldProtocol detection request IGNORED.\n");
                 break;  // swallow P1 detection requests
             }
 
-            dbg_printf(1, "Respond to an incoming Metis detection request / code: 0x%08x\n", code);
+            hpsdr_dbg_printf(1, "Respond to an incoming Metis detection request / code: 0x%08x\n", code);
 
             // processing an invalid packet is too dangerous -- skip it!
             if (bytes_read != 63) {
-                dbg_printf(1, "InvalidLength: RvcMsg Code=0x%08x Len=%d\n", code, (int) bytes_read);
+                hpsdr_dbg_printf(1, "InvalidLength: RvcMsg Code=0x%08x Len=%d\n", code, (int) bytes_read);
                 break;
             }
             reply[2] = 2;
@@ -507,7 +458,7 @@ int main(int argc, char *argv[]) {
                 // We simply suppress the response in this (very unlikely) case.
                 if (!active_thread) {
                     if (send(sock_TCP_Client, buffer, 60, 0) < 0) {
-                        dbg_printf(1, "TCP send error occurred when responding to an incoming Metis detection request!\n");
+                        hpsdr_dbg_printf(1, "TCP send error occurred when responding to an incoming Metis detection request!\n");
                     }
                     // close the TCP socket which was only used for the detection
                     close(sock_TCP_Client);
@@ -521,11 +472,11 @@ int main(int argc, char *argv[]) {
 
             // stop the SDR to PC transmission via handler_ep6
         case 0x0004feef:
-            dbg_printf(1, "STOP the transmission via handler_ep6 / code: 0x%08x\n", code);
+            hpsdr_dbg_printf(1, "STOP the transmission via handler_ep6 / code: 0x%08x\n", code);
 
             // processing an invalid packet is too dangerous -- skip it!
             if (bytes_read != 64) {
-                dbg_printf(1, "InvalidLength: RvcMsg Code=0x%08x Len=%d\n", code, bytes_read);
+                hpsdr_dbg_printf(1, "InvalidLength: RvcMsg Code=0x%08x Len=%d\n", code, bytes_read);
                 break;
             }
 
@@ -543,15 +494,15 @@ int main(int argc, char *argv[]) {
         case 0x0204feef:
         case 0x0304feef:
             if (new_protocol_running()) {
-                dbg_printf(1, "OldProtocol START command received but NewProtocol radio already running!\n");
+                hpsdr_dbg_printf(1, "OldProtocol START command received but NewProtocol radio already running!\n");
                 break;
             }
             // processing an invalid packet is too dangerous -- skip it!
             if (bytes_read != 64) {
-                dbg_printf(1, "InvalidLength: RvcMsg Code=0x%08x Len=%d\n", code, bytes_read);
+                hpsdr_dbg_printf(1, "InvalidLength: RvcMsg Code=0x%08x Len=%d\n", code, bytes_read);
                 break;
             }
-            dbg_printf(1, "START the PC-to-SDR handler thread / code: 0x%08x\n", code);
+            hpsdr_dbg_printf(1, "START the PC-to-SDR handler thread / code: 0x%08x\n", code);
 
             enable_thread = 0;
             while (active_thread)
@@ -573,13 +524,13 @@ int main(int argc, char *argv[]) {
             active_thread = 1;
 
             if (pthread_create(&thread, NULL, op_handler_ep6, NULL) < 0) {
-                dbg_printf(1, "ERROR: create old protocol thread");
+                hpsdr_dbg_printf(1, "ERROR: create old protocol thread");
                 return EXIT_FAILURE;
             }
             pthread_detach(thread);
 
-            if (pthread_create(&tx_hardware_thread_id, NULL, tx_hardware_thread, (void*) (&iqsamples)) < 0) {
-                dbg_printf(1, "ERROR: create tx_hardware_thread");
+            if (pthread_create(&tx_hardware_thread_id, NULL, tx_hardware_thread, NULL) < 0) {
+                hpsdr_dbg_printf(1, "ERROR: create tx_hardware_thread");
                 return EXIT_FAILURE;
             }
             pthread_detach(thread);
@@ -600,18 +551,18 @@ int main(int argc, char *argv[]) {
             if (bytes_read == 264 && buffer[0] == 0xEF && buffer[1] == 0xFE && buffer[2] == 0x03 && buffer[3] == 0x01) {
                 static long cnt = 0;
                 unsigned long blks = (buffer[4] << 24) + (buffer[5] << 16) + (buffer[6] << 8) + buffer[7];
-                dbg_printf(1, "OldProtocol Program blks=%lu count=%ld\r", blks, ++cnt);
+                hpsdr_dbg_printf(1, "OldProtocol Program blks=%lu count=%ld\r", blks, ++cnt);
 
                 op_program(buffer);
 
                 sendto(sock_udp, buffer, 60, 0, (struct sockaddr*) &addr_from, sizeof(addr_from));
                 if (blks == cnt)
-                    dbg_printf(1, "\n\n Programming Done!\n");
+                    hpsdr_dbg_printf(1, "\n\n Programming Done!\n");
                 break;
             }
 
             if (bytes_read == 64 && buffer[0] == 0xEF && buffer[1] == 0xFE && buffer[2] == 0x03 && buffer[3] == 0x02) {
-                dbg_printf(1, "OldProtocol Erase packet received:\n");
+                hpsdr_dbg_printf(1, "OldProtocol Erase packet received:\n");
 
                 op_erase_packet(buffer);
 
@@ -621,9 +572,9 @@ int main(int argc, char *argv[]) {
             }
 
             if (bytes_read == 63 && buffer[0] == 0xEF && buffer[1] == 0xFE && buffer[2] == 0x03) {
-                dbg_printf(1, "OldProtocol SetIP packet received:\n");
-                dbg_printf(1, "MAC address is %02x:%02x:%02x:%02x:%02x:%02x\n", buffer[3], buffer[4], buffer[5], buffer[6], buffer[7], buffer[8]);
-                dbg_printf(1, "IP  address is %03d:%03d:%03d:%03d\n", buffer[9], buffer[10], buffer[11], buffer[12]);
+                hpsdr_dbg_printf(1, "OldProtocol SetIP packet received:\n");
+                hpsdr_dbg_printf(1, "MAC address is %02x:%02x:%02x:%02x:%02x:%02x\n", buffer[3], buffer[4], buffer[5], buffer[6], buffer[7], buffer[8]);
+                hpsdr_dbg_printf(1, "IP  address is %03d:%03d:%03d:%03d\n", buffer[9], buffer[10], buffer[11], buffer[12]);
 
                 op_set_ip(buffer);
 
@@ -633,10 +584,10 @@ int main(int argc, char *argv[]) {
 
             if (code == 0 && buffer[4] == 0x02) {
                 if (oldnew == 1) {
-                    dbg_printf(1, "NewProtocol discovery packet IGNORED.\n");
+                    hpsdr_dbg_printf(1, "NewProtocol discovery packet IGNORED.\n");
                     break;
                 }
-                dbg_printf(1, "NewProtocol discovery packet received\n");
+                hpsdr_dbg_printf(1, "NewProtocol discovery packet received\n");
 
                 np_discovery(buffer, new_protocol_running(), NEWDEVICE);
 
@@ -646,10 +597,10 @@ int main(int argc, char *argv[]) {
 
             if (code == 0 && buffer[4] == 0x04) {
                 if (oldnew == 1) {
-                    dbg_printf(1, "NewProtocol erase packet IGNORED.\n");
+                    hpsdr_dbg_printf(1, "NewProtocol erase packet IGNORED.\n");
                     break;
                 }
-                dbg_printf(1, "NewProtocol erase packet received\n");
+                hpsdr_dbg_printf(1, "NewProtocol erase packet received\n");
 
                 np_erase_packet(buffer, active_thread, NEWDEVICE);
 
@@ -661,13 +612,13 @@ int main(int argc, char *argv[]) {
 
             if (bytes_read == 265 && buffer[4] == 0x05) {
                 if (oldnew == 1) {
-                    dbg_printf(1, "NewProtocol program packet IGNORED.\n");
+                    hpsdr_dbg_printf(1, "NewProtocol program packet IGNORED.\n");
                     break;
                 }
                 unsigned long seq, blk;
                 seq = (buffer[0] << 24) + (buffer[1] << 16) + (buffer[2] << 8) + buffer[3];
                 blk = (buffer[5] << 24) + (buffer[6] << 16) + (buffer[7] << 8) + buffer[8];
-                dbg_printf(1, "NewProtocol Program packet received: seq=%lu blk=%lu\r", seq, blk);
+                hpsdr_dbg_printf(1, "NewProtocol Program packet received: seq=%lu blk=%lu\r", seq, blk);
                 if (seq == 0)
                     checksum = 0;
                 for (j = 9; j <= 264; j++)
@@ -677,16 +628,16 @@ int main(int argc, char *argv[]) {
 
                 sendto(sock_udp, buffer, 60, 0, (struct sockaddr*) &addr_from, sizeof(addr_from));
                 if (seq + 1 == blk)
-                    dbg_printf(1, "\n\nProgramming Done!\n");
+                    hpsdr_dbg_printf(1, "\n\nProgramming Done!\n");
                 break;
             }
 
             if (bytes_read == 60 && code == 0 && buffer[4] == 0x06) {
                 if (oldnew == 1) {
-                    dbg_printf(1, "NewProtocol SetIP packet IGNORED.\n");
+                    hpsdr_dbg_printf(1, "NewProtocol SetIP packet IGNORED.\n");
                     break;
                 }
-                dbg_printf(1, "NewProtocol SetIP packet received for MAC %2x:%2x:%2x:%2x%2x:%2x IP=%d:%d:%d:%d\n", buffer[5], buffer[6], buffer[7], buffer[8],
+                hpsdr_dbg_printf(1, "NewProtocol SetIP packet received for MAC %2x:%2x:%2x:%2x%2x:%2x IP=%d:%d:%d:%d\n", buffer[5], buffer[6], buffer[7], buffer[8],
                         buffer[9], buffer[10], buffer[11], buffer[12], buffer[13], buffer[14]);
 
                 // only respond if this is for OUR device
@@ -711,7 +662,7 @@ int main(int argc, char *argv[]) {
 
             if (bytes_read == 60 && buffer[4] == 0x00) {
                 if (oldnew == 1) {
-                    dbg_printf(1, "NewProtocol General packet IGNORED.\n");
+                    hpsdr_dbg_printf(1, "NewProtocol General packet IGNORED.\n");
                     break;
                 }
                 // handle "general packet" of the new protocol
@@ -722,10 +673,10 @@ int main(int argc, char *argv[]) {
                 new_protocol_general_packet(buffer);
                 break;
             } else {
-                dbg_printf(1, "Invalid packet (len=%d) detected: ", bytes_read);
+                hpsdr_dbg_printf(1, "Invalid packet (len=%d) detected: ", bytes_read);
                 for (i = 0; i < 16; i++)
-                    dbg_printf(1, "%02x ", buffer[i]);
-                dbg_printf(1, "\n");
+                    hpsdr_dbg_printf(1, "%02x ", buffer[i]);
+                hpsdr_dbg_printf(1, "\n");
             }
 
             break;
@@ -746,20 +697,20 @@ int main(int argc, char *argv[]) {
 }
 
 void* tx_hardware_thread(void *data) {
-    dbg_printf(1, "<Start tx_hardware_thread>\n");
+    hpsdr_dbg_printf(1, "<Start tx_hardware_thread>\n");
+    //struct samples_t *iqsamples_tx = (struct samples_t*) data;
 
-    struct samples_t *iqsamples_tx = (struct samples_t*) data;
-
-    //rpitx_iq_init(48000,  tx_freq);
-    rpitx_iq_init(48000, 147360); // TODO: only for test
+    hpsdr_dbg_printf(1, " -- TX Frequency: %f\n", TX_Frequency);
+    rpitx_iq_init(48000,  TX_Frequency);
+    //rpitx_iq_init(48000, 147360); // only for test
 
     while (1) {
         if (!enable_thread)
             break;
-        rpitx_iq_send(iqsamples_tx, &enable_thread);
+        rpitx_iq_send(&iqsamples, &enable_thread);
     }
 
     rpitx_iq_deinit();
-    dbg_printf(1, "<Stop tx_hardware_thread>\n");
+    hpsdr_dbg_printf(1, "<Stop tx_hardware_thread>\n");
     return NULL;
 }

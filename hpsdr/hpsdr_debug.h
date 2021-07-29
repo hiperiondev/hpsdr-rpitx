@@ -1,11 +1,15 @@
+/*
+ * hpsdr_debug.h
+ *
+ *  Created on: 18 jul. 2021
+ *      Author: Emiliano Gonzalez LU3VEA (lu3vea @ gmail . com))
+ */
+
 #ifndef HPSDR_DEBUG_H_
 #define HPSDR_DEBUG_H_
 
-#include <stdio.h>
-#include <stdarg.h>
-
-void dbg_setlevel(int Level);
-int dbg_getlevel();
-void dbg_printf(int Level, const char *fmt, ...);
+void hpsdr_dbg_setlevel(int Level);
+ int hpsdr_dbg_getlevel(void);
+void hpsdr_dbg_printf(int Level, const char *fmt, ...);
 
 #endif
