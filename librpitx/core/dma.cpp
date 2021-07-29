@@ -15,14 +15,15 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <dma.hpp>
-#include <rpi.hpp>
-#include <util.hpp>
-#include "stdio.h"
+#include <stdio.h>
+
+#include "dma.hpp"
+#include "rpi.hpp"
+#include "util.hpp"
 
 extern "C" {
-#include <mailbox.hpp>
-#include <raspberry_pi_revision.hpp>
+#include "mailbox.hpp"
+#include "raspberry_pi_revision.hpp"
 }
 #include <unistd.h>
 

@@ -25,12 +25,13 @@
 //
 //-------------------------------------------------------------------------
 
-#include <ctype.h>
-#include <raspberry_pi_revision.hpp>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <util.hpp>
+#include <ctype.h>
+
+#include "raspberry_pi_revision.hpp"
+#include "util.hpp"
 
 //-------------------------------------------------------------------------
 //

@@ -29,6 +29,7 @@
 #define CORE_MAILBOX_H_
 
 #include <linux/ioctl.h>
+
 // Newer kernels (>= 4.1) use major 249, older ones major 100.
 #define MAJOR_NUM_A          249
 #define MAJOR_NUM_B          100

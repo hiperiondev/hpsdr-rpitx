@@ -16,19 +16,17 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-extern "C" {
-#include <mailbox.hpp>
-}
-
-#include <gpio.hpp>
-#include <raspberry_pi_revision.hpp>
-#include "stdio.h"
+#include <stdio.h>
 #include <unistd.h>
 #include <sys/timex.h>
 #include <math.h>
 #include <string.h>
-#include <util.hpp>
-#include <rpi.hpp>
+
+#include "mailbox.hpp"
+#include "gpio.hpp"
+#include "raspberry_pi_revision.hpp"
+#include "util.hpp"
+#include "rpi.hpp"
 
 gpio::gpio(uint32_t base, uint32_t len) {
     dbg_printf(2, "> func: %s base:%d len:%d (file %s | line %d)\n", __func__, base, len, __FILE__, __LINE__);

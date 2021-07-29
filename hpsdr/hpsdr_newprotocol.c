@@ -37,7 +37,6 @@
 #include <arpa/inet.h>
 #include <math.h>
 
-#define EXTERN extern
 #include "hpsdr_main.h"
 #include "hpsdr_debug.h"
 #include "hpsdr_definitions.h"

@@ -3,8 +3,9 @@
  */
 
 #include <stdint.h>
-#include <util.hpp>
 #include <cstdio>
+
+#include "util.hpp"
 
 static unsigned get_dt_ranges(const char *filename, unsigned offset) {
     dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);

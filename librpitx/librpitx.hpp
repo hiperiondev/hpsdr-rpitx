@@ -16,11 +16,12 @@
  */
 
 // core
-#include <dma.hpp>
-#include <dsp.hpp>
-#include <gpio.hpp>
-#include <util.hpp>
+#include "dma.hpp"
+#include "dsp.hpp"
+#include "gpio.hpp"
+#include "util.hpp"
 
+// modulation
 #include "iqdmasync.hpp"
 //#include "amdmasync.hpp"
 //#include "atv.hpp"

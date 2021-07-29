@@ -25,10 +25,11 @@
  *
  */
 
-#include <librpitx_c.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include "librpitx.h"
+
+#include "librpitx.hpp"
+#include "librpitx_c.h"
 #include "hpsdr_main.h"
 
 #define IQBURST 10

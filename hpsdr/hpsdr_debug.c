@@ -25,11 +25,11 @@
  *
  */
 
-#include "hpsdr_debug.h"
-
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdarg.h>
+
+#include "hpsdr_debug.h"
 
 static int hpsdr_debug_level = 0;
 int hpsdr_debug_id = 1;

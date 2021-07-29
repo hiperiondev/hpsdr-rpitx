@@ -1,10 +1,11 @@
 #ifndef CORE_DMA_H_
 #define CORE_DMA_H_
 
-#include <dma_registers.hpp>
-#include <gpio.hpp>
-#include <util.hpp>
-#include "stdint.h"
+#include <stdint.h>
+
+#include "dma_registers.hpp"
+#include "gpio.hpp"
+#include "util.hpp"
 
 class dma {
 protected:

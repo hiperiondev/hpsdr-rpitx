@@ -1,9 +1,10 @@
 #ifndef CORE_GPIO_H_
 #define CORE_GPIO_H_
 
-#include <gpio_registers.hpp>
-#include "stdint.h"
+#include <stdint.h>
 #include <cstdio>
+
+#include <gpio_registers.hpp>
 
 #define PHYSICAL_BUS 0x7E000000
 
