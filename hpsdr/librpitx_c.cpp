@@ -15,15 +15,12 @@
 
 static int Decimation = 1;
 int Harmonic = 1;
-int rp_txptr = 0;
 
 iqdmasync *iqsender = NULL;
 std::complex<float> CIQBuffer[IQBURST];
 
-void rpitx_iq_init(int SampleRate, float SetFrequency, int txptr) {
-	rp_txptr = txptr;
-	iqsender = new iqdmasync(SetFrequency * 1e3, SampleRate, 14, IQBURST * 4,
-			MODE_IQ);
+void rpitx_iq_init(int SampleRate, float SetFrequency) {
+	iqsender = new iqdmasync(SetFrequency * 1e3, SampleRate, 14, IQBURST * 4, MODE_IQ);
 	iqsender->Setppm(0);
 }
 
@@ -34,7 +31,7 @@ void rpitx_iq_deinit(void) {
 
 void rpitx_iq_send(struct samples_t *iqsamples_tx, int *enable) {
 	int CplxSampleNumber = 0;
-	rp_txptr = iqsamples_tx->txptr;
+	int rp_txptr = iqsamples_tx->txptr;
 	while (1) {
 
 		if (rp_txptr > iqsamples_tx->txptr)

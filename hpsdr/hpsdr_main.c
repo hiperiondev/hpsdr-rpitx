@@ -65,7 +65,6 @@
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 
-#define EXTERN
 #include "hpsdr_main.h"
 #include "hpsdr_debug.h"
 #include "hpsdr_functions.h"
@@ -1404,13 +1403,12 @@ void* tx_hardware_thread(void *data) {
     struct samples_t *iqsamples_tx = (struct samples_t *)data;
 
     //rpitx_iq_init(48000,  tx_freq);
-    rpitx_iq_init(48000,  147360, iqsamples_tx->txptr);
+    rpitx_iq_init(48000, 147360); // TODO: only for test
 
 	while (1) {
 		if (!enable_thread)
 			break;
 		rpitx_iq_send(iqsamples_tx, &enable_thread);
-		//	sleep(1);
 	}
 
 	rpitx_iq_deinit();
