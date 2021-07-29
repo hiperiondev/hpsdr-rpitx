@@ -16,7 +16,7 @@
  */
 
 #include "stdio.h"
-#include "ngfmdmasync.h"
+#include "ngfmdmasync.hpp"
 #include <unistd.h>
 #include <sched.h>
 #include <time.h>

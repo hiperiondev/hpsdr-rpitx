@@ -17,7 +17,7 @@
 
 #include <gpio.hpp>
 #include "stdio.h"
-#include "atv.h"
+#include "atv.hpp"
 #include <unistd.h>
 #include <math.h>
 #include <time.h>

@@ -36,21 +36,21 @@ extern "C" {
 #include <netinet/in.h>
 
 // These two variables monitor whether the TX thread is active
-int enable_thread;
-int active_thread;
+extern int enable_thread;
+extern int active_thread;
 
 // Socket for communicating with the "PC side"
-int sock_TCP_Server;
-int sock_TCP_Client;
-int sock_udp;
+extern int sock_TCP_Server;
+extern int sock_TCP_Client;
+extern int sock_udp;
 
 // Address where to send packets from the old and new protocol
 // to the PC
-struct sockaddr_in addr_new;
-struct sockaddr_in addr_old;
+extern struct sockaddr_in addr_new;
+extern struct sockaddr_in addr_old;
 
-int OLDDEVICE;
-int NEWDEVICE;
+extern int OLDDEVICE;
+extern int NEWDEVICE;
 
 // A table of (random) noise with about -90 dBm on the whole spectrum
 // This is a very long table such that there is no audible "beating"
@@ -58,21 +58,21 @@ int NEWDEVICE;
 #define LENNOISE 1536000
 #define NOISEDIV (RAND_MAX / 768000)
 
-double noiseItab[LENNOISE];
-double noiseQtab[LENNOISE];
+extern double noiseItab[LENNOISE];
+extern double noiseQtab[LENNOISE];
 
 // A table of (man made) noise fed to the I samples of ADC0
 // and to the Q samples of ADC1, such that it can be eliminated
 // using DIVERSITY
-int diversity;
+extern int diversity;
 
 #define LENDIV 16000
-double divtab[LENDIV];
+extern double divtab[LENDIV];
 
 // An 800-Hz tone with 0 dBm
 #define LENTONE 15360
-double toneItab[LENTONE];
-double toneQtab[LENTONE];
+extern double toneItab[LENTONE];
+extern double toneQtab[LENTONE];
 
 // TX fifo (needed for PURESIGNAL)
 
@@ -93,12 +93,12 @@ struct samples_t {
 	double qsample[OLDRTXLEN];
 	int txptr;
 };
-struct samples_t iqsamples;
+extern struct samples_t iqsamples;
 
-float TX_Frequency;
+extern float TX_Frequency;
 
 // Constants for conversion of TX power
-double c1, c2;
+extern double c1, c2;
 
 pthread_t tx_hardware_thread_id;
 void* tx_hardware_thread(void*);
@@ -108,7 +108,7 @@ void data_print(char* prfx, double l, double r);
 
 // Forward declarations for new protocol stuff
 void np_general_packet(unsigned char *buffer);
-int np_running(void);
+ int np_running(void);
 
 // Using clock_nanosleep of librt
 extern int clock_nanosleep(clockid_t __clock_id, int __flags, __const struct timespec *__req, struct timespec *__rem);

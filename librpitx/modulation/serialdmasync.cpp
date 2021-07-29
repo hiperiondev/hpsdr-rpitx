@@ -16,7 +16,7 @@
  */
 
 #include "stdio.h"
-#include "serialdmasync.h"
+#include "serialdmasync.hpp"
 
 serialdmasync::serialdmasync(uint32_t SampleRate, int Channel, uint32_t FifoSize, bool dualoutput) : bufferdma(Channel, FifoSize, 1, 1) {
     if (dualoutput) //Fixme if 2pin we want maybe 2*SRATE as it is distributed over 2 pin

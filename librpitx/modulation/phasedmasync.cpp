@@ -16,7 +16,7 @@
  */
 
 #include "stdio.h"
-#include "phasedmasync.h"
+#include "phasedmasync.hpp"
 #include <unistd.h>
 #include <time.h>
 #include <util.hpp>

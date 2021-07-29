@@ -52,38 +52,47 @@
 #include "hpsdr_newprotocol.h"
 #include "librpitx_c.h"
 
+int enable_thread;
+int active_thread;
+int sock_TCP_Server;
+int sock_TCP_Client;
+int sock_udp;
+struct sockaddr_in addr_new;
+struct sockaddr_in addr_old;
+int OLDDEVICE;
+int NEWDEVICE;
+double noiseItab[LENNOISE];
+double noiseQtab[LENNOISE];
+int diversity;
+double divtab[LENDIV];
+double toneItab[LENTONE];
+double toneQtab[LENTONE];
+struct samples_t iqsamples;
+float TX_Frequency;
+double c1, c2;
+
 pthread_t tx_hardware_thread_id;
-
 void* tx_hardware_thread(void *data);
-
 static int oldnew = 3;    // 1: only P1, 2: only P2, 3: P1 and P2,
 
 int main(int argc, char *argv[]) {
     int i, j, size;
     pthread_t thread;
-
     uint8_t reply[11] = { 0xef, 0xfe, 2, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff, 0, 1 };
-
     uint8_t id[4] = { 0xef, 0xfe, 1, 6 };
     uint32_t code;
-    //int16_t sample; //, l, r;
-
     struct sockaddr_in addr_udp;
     uint8_t buffer[1032];
     struct timeval tv;
     int yes = 1;
-    //uint8_t *bp;
     unsigned long checksum;
     socklen_t lenaddr;
     struct sockaddr_in addr_from;
     unsigned int seed;
-
     uint32_t last_seqnum = 0xffffffff, seqnum;  // sequence number of received packet
-
     int udp_retries = 0;
     int bytes_read, bytes_left;
     uint32_t *code0 = (uint32_t*) buffer;  // fast access to code of first buffer
-
     double run, off, inc;
 
     checksum = 0;

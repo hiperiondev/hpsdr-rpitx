@@ -16,7 +16,7 @@
  */
 
 #include "stdio.h"
-#include "fskburst.h"
+#include "fskburst.hpp"
 #include <unistd.h>
 #include <util.hpp>
 

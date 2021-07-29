@@ -16,7 +16,7 @@
  */
 
 #include "stdio.h"
-#include "iqdmasync.h"
+#include "iqdmasync.hpp"
 #include <unistd.h>
 #include <sched.h>
 #include <util.hpp>

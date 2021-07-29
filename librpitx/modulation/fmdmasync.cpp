@@ -17,7 +17,7 @@
 
 #include <gpio.hpp> //for definition of registers
 #include "stdio.h"
-#include "fmdmasync.h"
+#include "fmdmasync.hpp"
 
 fmdmasync::fmdmasync(int Channel, uint32_t FifoSize) : dma(Channel, FifoSize * 2, FifoSize) {
     SetDmaAlgo();

@@ -18,7 +18,7 @@
 #include "stdio.h"
 #include <unistd.h>
 #include <util.hpp>
-#include "ookburst.h"
+#include "ookburst.hpp"
 
 ookburst::ookburst(uint64_t TuneFrequency, float SymbolRate, int Channel, uint32_t FifoSize, size_t upsample, float RatioRamp) :
         bufferdma(Channel, FifoSize * upsample + 2, 2, 1), SR_upsample(upsample) {
