@@ -29,7 +29,7 @@ void rpitx_iq_deinit(void) {
 		delete (iqsender);
 }
 
-void rpitx_iq_send(struct samples_t *iqsamples_tx, int *enable) {
+void rpitx_iq_send(struct samples_t *iqsamples_tx, int *enable, int *ptt) {
 	int CplxSampleNumber = 0;
 	int rp_txptr = iqsamples_tx->txptr;
 	while (1) {
@@ -50,7 +50,6 @@ void rpitx_iq_send(struct samples_t *iqsamples_tx, int *enable) {
 		iqsender->SetIQSamples(CIQBuffer, CplxSampleNumber, Harmonic);
 
 		if (!*enable) {
-			printf("... STOP transmitting");
 			break;
 		}
 	}

@@ -212,56 +212,73 @@ int main(int argc, char *argv[]) {
             OLDDEVICE = DEVICE_METIS;
             NEWDEVICE = NEW_DEVICE_ATLAS;
         }
+
         if (!strncmp(argv[i], "-hermes", 7)) {
+        	dbg_printf(1, "HERMES\n");
             OLDDEVICE = DEVICE_HERMES;
             NEWDEVICE = NEW_DEVICE_HERMES;
         }
+
         if (!strncmp(argv[i], "-griffin", 8)) {
             OLDDEVICE = DEVICE_GRIFFIN;
             NEWDEVICE = NEW_DEVICE_HERMES2;
         }
+
         if (!strncmp(argv[i], "-angelia", 8)) {
             OLDDEVICE = DEVICE_ANGELIA;
             NEWDEVICE = NEW_DEVICE_ANGELIA;
         }
+
         if (!strncmp(argv[i], "-orion", 6)) {
             OLDDEVICE = DEVICE_ORION;
             NEWDEVICE = NEW_DEVICE_ORION;
         }
+
         if (!strncmp(argv[i], "-orion2", 7)) {
             OLDDEVICE = DEVICE_ORION2;
             NEWDEVICE = NEW_DEVICE_ORION2;
         }
+
         if (!strncmp(argv[i], "-hermeslite", 11)) {
             OLDDEVICE = DEVICE_HERMES_LITE;
             NEWDEVICE = NEW_DEVICE_HERMES_LITE;
         }
+
         if (!strncmp(argv[i], "-hermeslite2", 12)) {
             OLDDEVICE = DEVICE_HERMES_LITE2;
             NEWDEVICE = NEW_DEVICE_HERMES_LITE2;
         }
+
         if (!strncmp(argv[i], "-c25", 4)) {
             OLDDEVICE = DEVICE_C25;
             NEWDEVICE = NEW_DEVICE_HERMES;
         }
+
         if (!strncmp(argv[i], "-diversity", 10)) {
             diversity = 1;
         }
+
         if (!strncmp(argv[i], "-P1", 3)) {
             oldnew = 1;
         }
+
         if (!strncmp(argv[i], "-P2", 3)) {
             oldnew = 2;
         }
+
         if (!strncmp(argv[i], "-debugtx", 6)) {
             tx_print = 1;
         }
+
         if (!strncmp(argv[i], "-debugrx", 6)) {
             rx_print = 1;
         }
+
         if (!strncmp(argv[i], "-debug", 3)) {
             dbg_setlevel(1);
         }
+
+        /*
         if (!strncmp(argv[i], "-help", 3) || !strncmp(argv[i], "--help", 3)) {
             printf("Options:\n"
                     "    -atlas: \n"
@@ -281,6 +298,7 @@ int main(int argc, char *argv[]) {
                     "    -debugrx: \n");
             exit(0);
         }
+        */
     }
 
     switch (OLDDEVICE) {
@@ -1408,7 +1426,9 @@ void* tx_hardware_thread(void *data) {
 	while (1) {
 		if (!enable_thread)
 			break;
-		rpitx_iq_send(iqsamples_tx, &enable_thread);
+		if (ptt)
+			dbg_printf(1, "---ptt---\n");
+		rpitx_iq_send(iqsamples_tx, &enable_thread, &ptt);
 	}
 
 	rpitx_iq_deinit();
