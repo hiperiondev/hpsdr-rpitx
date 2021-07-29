@@ -8,16 +8,15 @@
 #ifndef HPSDR_NEWPROTOCOL_H_
 #define HPSDR_NEWPROTOCOL_H_
 
- int new_protocol_running(void);
-void new_protocol_general_packet(unsigned char *buffer);
-void *ddc_specific_thread(void *data);
-void *duc_specific_thread(void *data);
-void *highprio_thread(void *data);
-void *rx_thread(void *data);
-void *tx_thread(void *data);
-void *send_highprio_thread(void *data);
-void *audio_thread(void *data);
-void *mic_thread(void *data);
-
+ int np_running(void);
+void np_general_packet(unsigned char *buffer);
+void *np_ddc_thread(void *data);
+void *np_duc_thread(void *data);
+void *np_highprio_thread(void *data);
+void *np_rx_thread(void *data);
+void *np_tx_thread(void *data);
+void *np_send_highprio_thread(void *data);
+void *np_audio_thread(void *data);
+void *np_mic_thread(void *data);
 
 #endif /* HPSDR_NEWPROTOCOL_H_ */

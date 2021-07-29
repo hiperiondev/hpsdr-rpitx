@@ -114,25 +114,25 @@ static pthread_t audio_thread_id;
 static pthread_t highprio_thread_id = 0;
 static pthread_t send_highprio_thread_id;
 
-void* ddc_specific_thread(void*);
-void* duc_specific_thread(void*);
-void* highprio_thread(void*);
-void* send_highprio_thread(void*);
-void* rx_thread(void*);
-void* tx_thread(void*);
-void* mic_thread(void*);
-void* audio_thread(void*);
+void* np_ddc_thread(void*);
+void* np_duc_thread(void*);
+void* np_highprio_thread(void*);
+void* np_send_highprio_thread(void*);
+void* np_rx_thread(void*);
+void* np_tx_thread(void*);
+void* np_mic_thread(void*);
+void* np_audio_thread(void*);
 
 static double txlevel;
 
-int new_protocol_running(void) {
+int np_running(void) {
     if (run)
         return 1;
     else
         return 0;
 }
 
-void new_protocol_general_packet(unsigned char *buffer) {
+void np_general_packet(unsigned char *buffer) {
     hpsdr_dbg_printf(1, "-- new protocol packet received\n");
     static unsigned long seqnum = 0;
     unsigned long seqold;
@@ -293,7 +293,7 @@ void new_protocol_general_packet(unsigned char *buffer) {
     // Start HighPrio thread if we arrive here for the first time
     // The HighPrio thread keeps running all the time.
     if (!highprio_thread_id) {
-        if (pthread_create(&highprio_thread_id, NULL, highprio_thread, NULL) < 0) {
+        if (pthread_create(&highprio_thread_id, NULL, np_highprio_thread, NULL) < 0) {
             hpsdr_dbg_printf(1, "***** ERROR: Create HighPrio thread");
         }
         pthread_detach(highprio_thread_id);
@@ -311,7 +311,7 @@ void new_protocol_general_packet(unsigned char *buffer) {
     }
 }
 
-void* ddc_specific_thread(void *data) {
+void* np_ddc_thread(void *data) {
     hpsdr_dbg_printf(1, "-- Start ddc_specific_thread port: %d\n", ddc_port);
     int sock;
     struct sockaddr_in addr;
@@ -432,7 +432,7 @@ void* ddc_specific_thread(void *data) {
     return NULL;
 }
 
-void* duc_specific_thread(void *data) {
+void* np_duc_thread(void *data) {
     hpsdr_dbg_printf(1, "-- Start duc_specific_thread port: %d\n", duc_port);
     int sock;
     struct sockaddr_in addr;
@@ -545,7 +545,7 @@ void* duc_specific_thread(void *data) {
     return NULL;
 }
 
-void* highprio_thread(void *data) {
+void* np_highprio_thread(void *data) {
     hpsdr_dbg_printf(1, "-- Start highprio_thread port: %d\n", hp_port);
     int sock;
     struct sockaddr_in addr;
@@ -606,30 +606,30 @@ void* highprio_thread(void *data) {
             hpsdr_dbg_printf(1, "HP: Run=%d\n", rc);
             // if run=0, wait for threads to complete, otherwise spawn them off
             if (run) {
-                if (pthread_create(&ddc_specific_thread_id, NULL, ddc_specific_thread, NULL) < 0) {
+                if (pthread_create(&ddc_specific_thread_id, NULL, np_ddc_thread, NULL) < 0) {
                     hpsdr_dbg_printf(1, "***** ERROR: Create DDC specific thread\n");
                 }
-                if (pthread_create(&duc_specific_thread_id, NULL, duc_specific_thread, NULL) < 0) {
+                if (pthread_create(&duc_specific_thread_id, NULL, np_duc_thread, NULL) < 0) {
                     hpsdr_dbg_printf(1, "***** ERROR: Create DUC specific thread\n");
                 }
                 for (i = 0; i < NUMRECEIVERS; i++) {
-                    if (pthread_create(&rx_thread_id[i], NULL, rx_thread, (void*) (uintptr_t) i) < 0) {
+                    if (pthread_create(&rx_thread_id[i], NULL, np_rx_thread, (void*) (uintptr_t) i) < 0) {
                         hpsdr_dbg_printf(1, "***** ERROR: Create RX thread\n");
                     }
                 }
-                if (pthread_create(&tx_thread_id, NULL, tx_thread, NULL) < 0) {
+                if (pthread_create(&tx_thread_id, NULL, np_tx_thread, NULL) < 0) {
                     hpsdr_dbg_printf(1, "***** ERROR: Create TX thread\n");
                 }
                 if (pthread_create(&tx_hardware_thread_id, NULL, tx_hardware_thread, NULL) < 0) {
                     hpsdr_dbg_printf(1, "***** ERROR: Create TX Hardware thread\n");
                 }
-                if (pthread_create(&send_highprio_thread_id, NULL, send_highprio_thread, NULL) < 0) {
+                if (pthread_create(&send_highprio_thread_id, NULL, np_send_highprio_thread, NULL) < 0) {
                     hpsdr_dbg_printf(1, "***** ERROR: Create SendHighPrio thread\n");
                 }
-                if (pthread_create(&mic_thread_id, NULL, mic_thread, NULL) < 0) {
+                if (pthread_create(&mic_thread_id, NULL, np_mic_thread, NULL) < 0) {
                     hpsdr_dbg_printf(1, "***** ERROR: Create Mic thread\n");
                 }
-                if (pthread_create(&audio_thread_id, NULL, audio_thread, NULL) < 0) {
+                if (pthread_create(&audio_thread_id, NULL, np_audio_thread, NULL) < 0) {
                     hpsdr_dbg_printf(1, "***** ERROR: Create Audio thread\n");
                 }
             } else {
@@ -757,7 +757,7 @@ void* highprio_thread(void *data) {
     return NULL;
 }
 
-void* rx_thread(void *data) {
+void* np_rx_thread(void *data) {
     int sock;
     struct sockaddr_in addr;
     // One instance of this thread is started for each DDC
@@ -979,7 +979,7 @@ void* rx_thread(void *data) {
 }
 
 // This thread receives data (TX samples) from the PC
-void* tx_thread(void *data) {
+void* np_tx_thread(void *data) {
     hpsdr_dbg_printf(1, "-- Start tx_thread port: %d\n", duc0_port);
     int sock;
     struct sockaddr_in addr;
@@ -1071,7 +1071,7 @@ void* tx_thread(void *data) {
     return NULL;
 }
 
-void* send_highprio_thread(void *data) {
+void* np_send_highprio_thread(void *data) {
     hpsdr_dbg_printf(1, "-- Start send_highprio_thread port: %d\n", shp_port);
     int sock;
     struct sockaddr_in addr;
@@ -1141,7 +1141,7 @@ void* send_highprio_thread(void *data) {
 }
 
 // This thread receives the audio samples and plays them
-void* audio_thread(void *data) {
+void* np_audio_thread(void *data) {
     hpsdr_dbg_printf(1, "-- Start audio_thread port: %d\n", audio_port);
     int sock;
     struct sockaddr_in addr;
@@ -1209,7 +1209,7 @@ void* audio_thread(void *data) {
 }
 
 // The microphone thread just sends silence
-void* mic_thread(void *data) {
+void* np_mic_thread(void *data) {
     hpsdr_dbg_printf(1, "-- Start mic_thread port: %d\n", mic_port);
     int sock;
     struct sockaddr_in addr;

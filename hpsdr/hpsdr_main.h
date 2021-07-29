@@ -87,8 +87,8 @@ void* tx_hardware_thread(void*);
 void data_print(char* prfx, double l, double r);
 
 // Forward declarations for new protocol stuff
-void new_protocol_general_packet(unsigned char *buffer);
-int new_protocol_running(void);
+void np_general_packet(unsigned char *buffer);
+int np_running(void);
 
 // Using clock_nanosleep of librt
 extern int clock_nanosleep(clockid_t __clock_id, int __flags, __const struct timespec *__req, struct timespec *__rem);

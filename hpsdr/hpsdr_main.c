@@ -439,7 +439,7 @@ int main(int argc, char *argv[]) {
                 break;
             }
             reply[2] = 2;
-            if (active_thread || new_protocol_running()) {
+            if (active_thread || np_running()) {
                 reply[2] = 3;
             }
             reply[9] = 31; // software version
@@ -493,7 +493,7 @@ int main(int argc, char *argv[]) {
         case 0x0104feef:
         case 0x0204feef:
         case 0x0304feef:
-            if (new_protocol_running()) {
+            if (np_running()) {
                 hpsdr_dbg_printf(1, "OldProtocol START command received but NewProtocol radio already running!\n");
                 break;
             }
@@ -589,7 +589,7 @@ int main(int argc, char *argv[]) {
                 }
                 hpsdr_dbg_printf(1, "NewProtocol discovery packet received\n");
 
-                np_discovery(buffer, new_protocol_running(), NEWDEVICE);
+                np_discovery(buffer, np_running(), NEWDEVICE);
 
                 sendto(sock_udp, buffer, 60, 0, (struct sockaddr*) &addr_from, sizeof(addr_from));
                 break;
@@ -670,7 +670,7 @@ int main(int argc, char *argv[]) {
                 addr_new.sin_family = AF_INET;
                 addr_new.sin_addr.s_addr = addr_from.sin_addr.s_addr;
                 addr_new.sin_port = addr_from.sin_port;
-                new_protocol_general_packet(buffer);
+                np_general_packet(buffer);
                 break;
             } else {
                 hpsdr_dbg_printf(1, "Invalid packet (len=%d) detected: ", bytes_read);
