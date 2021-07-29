@@ -100,7 +100,7 @@ extern float TX_Frequency;
 // Constants for conversion of TX power
 extern double c1, c2;
 
-pthread_t tx_hardware_thread_id;
+extern pthread_t tx_hardware_thread_id;
 void* tx_hardware_thread(void*);
 
 // Forward declaration for the debug data
