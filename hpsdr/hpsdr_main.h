@@ -18,6 +18,23 @@
 extern "C" {
 #endif
 
+#include <stdlib.h>
+#include <netinet/in.h>
+
+// These two variables monitor whether the TX thread is active
+int enable_thread;
+int active_thread;
+
+// Socket for communicating with the "PC side"
+int sock_TCP_Server;
+int sock_TCP_Client;
+int sock_udp;
+
+// Address where to send packets from the old and new protocol
+// to the PC
+struct sockaddr_in addr_new;
+struct sockaddr_in addr_old;
+
 int OLDDEVICE;
 int NEWDEVICE;
 
@@ -62,7 +79,6 @@ struct samples_t {
 	double qsample[OLDRTXLEN];
 	int txptr;
 };
-
 struct samples_t iqsamples;
 
 // Constants for conversion of TX power

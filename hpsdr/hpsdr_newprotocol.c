@@ -117,15 +117,6 @@ void* mic_thread(void*);
 void* audio_thread(void*);
 
 static double txlevel;
-// Address where to send packets from the old and new protocol
-// to the PC
-struct sockaddr_in addr_new;
-struct sockaddr_in addr_old;
-
-void new_protocol_init(struct sockaddr_in addr_new_, struct sockaddr_in addr_old_) {
-	addr_new = addr_new_;
-	addr_old = addr_old_;
-}
 
 int new_protocol_running(void) {
     if (run)

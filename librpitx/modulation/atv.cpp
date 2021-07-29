@@ -67,15 +67,15 @@ atv::~atv() {
 
 void atv::SetDmaAlgo() {
     dma_cb_t *cbp = cbarray;
-    int LineResolution = 625;
+    //int LineResolution = 625;
 
-    uint32_t level0 = mem_virt_to_phys(&usermem[(usermemsize - 1)]);
-    uint32_t level1 = mem_virt_to_phys(&usermem[(usermemsize - 2)]);
-    uint32_t level4 = mem_virt_to_phys(&usermem[(usermemsize - 3)]);
+    //uint32_t level0 = mem_virt_to_phys(&usermem[(usermemsize - 1)]);
+    //uint32_t level1 = mem_virt_to_phys(&usermem[(usermemsize - 2)]);
+    //uint32_t level4 = mem_virt_to_phys(&usermem[(usermemsize - 3)]);
 
     uint32_t index_level0 = usermemsize - 1;
     uint32_t index_level1 = usermemsize - 2;
-    uint32_t index_level4 = usermemsize - 3;
+    //uint32_t index_level4 = usermemsize - 3;
 
     int shortsync_0 = 2;
     int shortsync_1 = 30;

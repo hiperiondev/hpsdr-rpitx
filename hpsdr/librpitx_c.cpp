@@ -29,7 +29,7 @@ void rpitx_iq_deinit(void) {
 		delete (iqsender);
 }
 
-void rpitx_iq_send(struct samples_t *iqsamples_tx, int *enable, int *ptt) {
+void rpitx_iq_send(struct samples_t *iqsamples_tx, int *enable) {
 	int CplxSampleNumber = 0;
 	int rp_txptr = iqsamples_tx->txptr;
 	while (1) {
