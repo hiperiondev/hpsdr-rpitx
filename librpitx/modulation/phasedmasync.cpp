@@ -101,7 +101,6 @@ phasedmasync::~phasedmasync() {
 void phasedmasync::SetDmaAlgo() {
     dma_cb_t *cbp = cbarray;
     for (uint32_t samplecnt = 0; samplecnt < buffersize; samplecnt++) {
-
         cbp->info = BCM2708_DMA_NO_WIDE_BURSTS | BCM2708_DMA_WAIT_RESP;
         cbp->src = mem_virt_to_phys(&usermem[samplecnt * registerbysample]);
         cbp->dst = 0x7E000000 + (PWM_FIFO << 2) + PWM_BASE;
@@ -137,11 +136,9 @@ void phasedmasync::SetPhase(uint32_t Index, int Phase) {
 void phasedmasync::SetPhaseSamples(int *sample, size_t Size) {
     size_t NbWritten = 0;
     //int OSGranularity = 100;
-
     long int start_time;
     long time_difference = 0;
     struct timespec gettime_now;
-
     int debug = 1;
 
     while (NbWritten < Size) {

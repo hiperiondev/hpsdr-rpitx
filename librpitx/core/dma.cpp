@@ -16,16 +16,13 @@
  */
 
 #include <stdio.h>
+#include <unistd.h>
 
 #include "dma.hpp"
 #include "rpi.hpp"
 #include "util.hpp"
-
-extern "C" {
 #include "mailbox.hpp"
 #include "raspberry_pi_revision.hpp"
-}
-#include <unistd.h>
 
 #define BUS_TO_PHYS(x) ((x)&~0xC0000000)
 

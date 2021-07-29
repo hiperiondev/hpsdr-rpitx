@@ -46,7 +46,6 @@ ngfmdmasync::ngfmdmasync(uint64_t TuneFrequency, uint32_t SR, int Channel, uint3
     // Note : Spurious are at +/-(19.2MHZ/2^20)*Div*N : (N=1,2,3...) So we need to have a big div to spurious away BUT
     // Spurious are ALSO at +/-(19.2MHZ/2^20)*(2^20-Div)*N
     // Max spurious avoid is to be in the center ! Theory shoud be that spurious are set away at 19.2/2= 9.6Mhz ! But need to get account of div of PLLClock
-
 }
 
 ngfmdmasync::~ngfmdmasync() {
@@ -60,7 +59,6 @@ void ngfmdmasync::SetPhase(bool inversed) {
 void ngfmdmasync::SetDmaAlgo() {
     dma_cb_t *cbp = cbarray;
     for (uint32_t samplecnt = 0; samplecnt < buffersize; samplecnt++) {
-
         // Write a frequency sample
         SetEasyCB(cbp, samplecnt * registerbysample, dma_pllc_frac, 1);
         cbp++;
@@ -68,7 +66,6 @@ void ngfmdmasync::SetDmaAlgo() {
         // Delay
         SetEasyCB(cbp, samplecnt * registerbysample, syncwithpwm ? dma_pwm : dma_pcm, 1);
         cbp++;
-
     }
 
     cbp--;

@@ -49,10 +49,8 @@ serialdmasync::~serialdmasync() {
 void serialdmasync::SetDmaAlgo() {
     dma_cb_t *cbp = cbarray;
     for (uint32_t samplecnt = 0; samplecnt < buffersize; samplecnt++) {
-
         SetEasyCB(cbp, samplecnt * registerbysample, dma_pwm, 1);
         cbp++;
-
     }
 
     cbp--;

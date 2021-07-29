@@ -172,7 +172,7 @@ static RASPBERRY_PI_MEMORY_T revisionToMemory[] = {
         RPI_512MB,          // 13
         RPI_512MB,          // 14
         RPI_256MB           // 15
-        };
+};
 
 static RASPBERRY_PI_MEMORY_T bitFieldToMemory[] = {
         RPI_256MB,
@@ -213,7 +213,7 @@ static RASPBERRY_PI_I2C_DEVICE_T revisionToI2CDevice[] = {
         RPI_I2C_1,              // 13
         RPI_I2C_1,              // 14
         RPI_I2C_1               // 15
-        };
+};
 
 //-------------------------------------------------------------------------
 
@@ -253,7 +253,7 @@ static RASPBERRY_PI_MODEL_T revisionToModel[] = {
         RPI_MODEL_B_PLUS,   // 13
         RPI_COMPUTE_MODULE, // 14
         RPI_MODEL_A_PLUS    // 15
-        };
+};
 
 //-------------------------------------------------------------------------
 
@@ -288,7 +288,7 @@ static RASPBERRY_PI_MANUFACTURER_T revisionToManufacturer[] = {
         RPI_MANUFACTURER_EMBEST,  // 13
         RPI_MANUFACTURER_SONY,    // 14
         RPI_MANUFACTURER_SONY     // 15
-        };
+};
 
 //-------------------------------------------------------------------------
 
@@ -321,8 +321,7 @@ static int revisionToPcbRevision[] = {
 //
 // Remove leading and trailing whitespace from a string.
 
-static char*
-trimWhiteSpace(char *string) {
+static char* trimWhiteSpace(char *string) {
     dbg_printf(2,"> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     if (string == NULL) {
         return NULL;
@@ -354,7 +353,7 @@ trimWhiteSpace(char *string) {
 
 //-------------------------------------------------------------------------
 
-int getRaspberryPiRevision() {
+int getRaspberryPiRevision(void) {
     dbg_printf(2,"> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     int raspberryPiRevision = 0;
 
@@ -518,8 +517,7 @@ int getRaspberryPiInformationForRevision(int revision, RASPBERRY_PI_INFO_T *info
 
 //-------------------------------------------------------------------------
 
-const char*
-raspberryPiMemoryToString(RASPBERRY_PI_MEMORY_T memory) {
+const char* raspberryPiMemoryToString(RASPBERRY_PI_MEMORY_T memory) {
     dbg_printf(2,"> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     const char *string = "unknown";
 
@@ -542,8 +540,7 @@ raspberryPiMemoryToString(RASPBERRY_PI_MEMORY_T memory) {
 
 //-------------------------------------------------------------------------
 
-const char*
-raspberryPiProcessorToString(RASPBERRY_PI_PROCESSOR_T processor) {
+const char* raspberryPiProcessorToString(RASPBERRY_PI_PROCESSOR_T processor) {
     dbg_printf(2,"> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     const char *string = "unknown";
 
@@ -566,8 +563,7 @@ raspberryPiProcessorToString(RASPBERRY_PI_PROCESSOR_T processor) {
 
 //-------------------------------------------------------------------------
 
-const char*
-raspberryPiI2CDeviceToString(RASPBERRY_PI_I2C_DEVICE_T i2cDevice) {
+const char* raspberryPiI2CDeviceToString(RASPBERRY_PI_I2C_DEVICE_T i2cDevice) {
     dbg_printf(2,"> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     const char *string = "unknown";
 
@@ -587,8 +583,7 @@ raspberryPiI2CDeviceToString(RASPBERRY_PI_I2C_DEVICE_T i2cDevice) {
 
 //-------------------------------------------------------------------------
 
-const char*
-raspberryPiModelToString(RASPBERRY_PI_MODEL_T model) {
+const char* raspberryPiModelToString(RASPBERRY_PI_MODEL_T model) {
     dbg_printf(2,"> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     const char *string = "unknown";
 
@@ -629,8 +624,7 @@ raspberryPiModelToString(RASPBERRY_PI_MODEL_T model) {
 
 //-------------------------------------------------------------------------
 
-const char*
-raspberryPiManufacturerToString(RASPBERRY_PI_MANUFACTURER_T manufacturer) {
+const char* raspberryPiManufacturerToString(RASPBERRY_PI_MANUFACTURER_T manufacturer) {
     dbg_printf(2,"> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     const char *string = "unknown";
 
@@ -653,4 +647,3 @@ raspberryPiManufacturerToString(RASPBERRY_PI_MANUFACTURER_T manufacturer) {
     dbg_printf(2,"< func: %s |\n", __func__);
     return string;
 }
-
