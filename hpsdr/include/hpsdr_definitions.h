@@ -53,5 +53,4 @@
 #define RX_IQ_TO_HOST_PORT_6 1041
 #define RX_IQ_TO_HOST_PORT_7 1042
 
-
 #endif /* HPSDR_DEFINITIONS_H_ */

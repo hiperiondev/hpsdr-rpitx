@@ -1,9 +1,10 @@
 #ifndef MODULATION_OOKBURST_H_
 #define MODULATION_OOKBURST_H_
 
-#include <dma.hpp>
-#include <gpio.hpp>
-#include "stdint.h"
+#include <stdint.h>
+
+#include "dma.hpp"
+#include "gpio.hpp"
 
 class ookburst: public bufferdma, public clkgpio, public pwmgpio, public pcmgpio {
 protected:

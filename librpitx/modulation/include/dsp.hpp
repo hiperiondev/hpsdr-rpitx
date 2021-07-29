@@ -18,7 +18,7 @@
 #ifndef CORE_DSP_H_
 #define CORE_DSP_H_
 
-#include "stdint.h"
+#include <stdint.h>
 #include <iostream>
 #include <math.h>
 #include <complex>

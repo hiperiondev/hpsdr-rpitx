@@ -1,8 +1,9 @@
 #ifndef MODULATION_FMDMASYNC_H_
 #define MODULATION_FMDMASYNC_H_
 
-#include <dma.hpp>
-#include "stdint.h"
+#include <stdint.h>
+
+#include "dma.hpp"
 
 class fmdmasync: public dma {
 public:

@@ -22,7 +22,7 @@
 #include <stdarg.h>
 
 void dbg_setlevel(int Level);
-int dbg_getlevel();
+ int dbg_getlevel();
 void dbg_printf(int Level, const char *fmt, ...);
 
 #endif

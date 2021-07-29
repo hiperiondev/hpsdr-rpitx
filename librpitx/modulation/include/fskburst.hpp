@@ -1,9 +1,10 @@
 #ifndef MODULATION_FSKBURST_H_
 #define MODULATION_FSKBURST_H_
 
-#include <dma.hpp>
-#include <gpio.hpp>
-#include "stdint.h"
+#include <stdint.h>
+
+#include "dma.hpp"
+#include "gpio.hpp"
 
 class fskburst: public bufferdma, public clkgpio, public pwmgpio, public pcmgpio {
 protected:
@@ -17,7 +18,6 @@ public:
     fskburst(uint64_t TuneFrequency, float SymbolRate, float Deviation, int Channel, uint32_t FifoSize, size_t upsample = 1, float RatioRamp = 0);
     ~fskburst();
     void SetDmaAlgo();
-
     void SetSymbols(unsigned char *Symbols, uint32_t Size);
 };
 

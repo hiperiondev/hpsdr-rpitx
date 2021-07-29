@@ -15,7 +15,8 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "stdio.h"
+#include <stdio.h>
+
 #include "serialdmasync.hpp"
 
 serialdmasync::serialdmasync(uint32_t SampleRate, int Channel, uint32_t FifoSize, bool dualoutput) : bufferdma(Channel, FifoSize, 1, 1) {

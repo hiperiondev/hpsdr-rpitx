@@ -15,14 +15,16 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <gpio.hpp>
-#include "stdio.h"
-#include "amdmasync.hpp"
+
+#include <stdio.h>
 #include <unistd.h>
 #include <math.h>
 #include <time.h>
 #include <sched.h>
 #include <stdlib.h>
+
+#include "gpio.hpp"
+#include "amdmasync.hpp"
 
 amdmasync::amdmasync(uint64_t TuneFrequency, uint32_t SR, int Channel, uint32_t FifoSize) :
         bufferdma(Channel, FifoSize, 3, 2) {

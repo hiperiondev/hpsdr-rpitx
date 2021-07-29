@@ -109,28 +109,19 @@ typedef struct {
 //          1 - found classic revision number
 //          2 - found Pi 2 style revision number
 
-int getRaspberryPiInformation(RASPBERRY_PI_INFO_T *info);
-
-int getRaspberryPiInformationForRevision(int revision, RASPBERRY_PI_INFO_T *info);
-
-int getRaspberryPiRevision(void);
-
-const char* raspberryPiMemoryToString(RASPBERRY_PI_MEMORY_T memory);
-
-const char* raspberryPiProcessorToString(RASPBERRY_PI_PROCESSOR_T processor);
-
-const char* raspberryPiI2CDeviceToString(RASPBERRY_PI_I2C_DEVICE_T i2cDevice);
-
-const char* raspberryPiModelToString(RASPBERRY_PI_MODEL_T model);
-
-const char* raspberryPiManufacturerToString(RASPBERRY_PI_MANUFACTURER_T manufacturer);
+       int getRaspberryPiInformation(RASPBERRY_PI_INFO_T *info);
+       int getRaspberryPiInformationForRevision(int revision, RASPBERRY_PI_INFO_T *info);
+       int getRaspberryPiRevision(void);
+const char *raspberryPiMemoryToString(RASPBERRY_PI_MEMORY_T memory);
+const char *raspberryPiProcessorToString(RASPBERRY_PI_PROCESSOR_T processor);
+const char *raspberryPiI2CDeviceToString(RASPBERRY_PI_I2C_DEVICE_T i2cDevice);
+const char *raspberryPiModelToString(RASPBERRY_PI_MODEL_T model);
+const char *raspberryPiManufacturerToString(RASPBERRY_PI_MANUFACTURER_T manufacturer);
 
 //-------------------------------------------------------------------------
 
 #ifdef __cplusplus
 }
 #endif
-
-//-------------------------------------------------------------------------
 
 #endif

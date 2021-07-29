@@ -15,11 +15,12 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "stdio.h"
-#include "iqdmasync.hpp"
+#include <stdio.h>
 #include <unistd.h>
 #include <sched.h>
-#include <util.hpp>
+
+#include "util.hpp"
+#include "iqdmasync.hpp"
 
 iqdmasync::iqdmasync(uint64_t TuneFrequency, uint32_t SR, int Channel, uint32_t FifoSize, int Mode) :
         bufferdma(Channel, FifoSize, 4, 3) {

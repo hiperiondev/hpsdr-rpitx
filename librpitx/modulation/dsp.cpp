@@ -14,9 +14,11 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <dsp.hpp>
+
 #include <stdlib.h>
-#include <util.hpp>
+
+#include "dsp.hpp"
+#include "util.hpp"
 
 dsp::dsp() {
     dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);

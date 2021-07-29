@@ -28,10 +28,6 @@
 #ifndef _HPSDRSIM_H_
 #define _HPSDRSIM_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdlib.h>
 #include <netinet/in.h>
 
@@ -103,13 +99,6 @@ extern double c1, c2;
 extern pthread_t tx_hardware_thread_id;
 void* tx_hardware_thread(void*);
 
-// Forward declaration for the debug data
-void data_print(char* prfx, double l, double r);
-
-// Forward declarations for new protocol stuff
-void np_general_packet(unsigned char *buffer);
- int np_running(void);
-
 // Using clock_nanosleep of librt
 extern int clock_nanosleep(clockid_t __clock_id, int __flags, __const struct timespec *__req, struct timespec *__rem);
 
@@ -118,9 +107,5 @@ extern int clock_nanosleep(clockid_t __clock_id, int __flags, __const struct tim
 // about the value a reasonable amp gives.
 #define IM3a  0.60
 #define IM3b  0.20
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

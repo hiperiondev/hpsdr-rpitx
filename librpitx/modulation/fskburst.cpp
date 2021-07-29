@@ -15,10 +15,11 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "stdio.h"
-#include "fskburst.hpp"
+#include <stdio.h>
 #include <unistd.h>
-#include <util.hpp>
+
+#include "util.hpp"
+#include "fskburst.hpp"
 
 fskburst::fskburst(uint64_t TuneFrequency, float SymbolRate, float Deviation, int Channel, uint32_t FifoSize, size_t upsample, float RatioRamp) :
         bufferdma(Channel, FifoSize * upsample + 3, 2, 1), freqdeviation(Deviation), SR_upsample(upsample) {

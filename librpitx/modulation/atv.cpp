@@ -15,14 +15,16 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <gpio.hpp>
-#include "stdio.h"
-#include "atv.hpp"
+
+#include <stdio.h>
 #include <unistd.h>
 #include <math.h>
 #include <time.h>
 #include <sched.h>
 #include <stdlib.h>
+
+#include "gpio.hpp"
+#include "atv.hpp"
 
 //#define CB_ATV (6 * 4 + 5 * 4 + 5 * 4 + (304 + 305) * (4 + 52 * 2))
 #define CB_ATV 70000

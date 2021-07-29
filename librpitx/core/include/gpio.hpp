@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <cstdio>
 
-#include <gpio_registers.hpp>
+#include "gpio_registers.hpp"
 
 #define PHYSICAL_BUS 0x7E000000
 

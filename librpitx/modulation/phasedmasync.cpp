@@ -15,11 +15,12 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "stdio.h"
-#include "phasedmasync.hpp"
+#include <stdio.h>
 #include <unistd.h>
 #include <time.h>
-#include <util.hpp>
+
+#include "phasedmasync.hpp"
+#include "util.hpp"
 
 //Stable tune for this pwm mode is up to 90MHZ
 

@@ -15,11 +15,12 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "stdio.h"
-#include "ngfmdmasync.hpp"
+#include <stdio.h>
 #include <unistd.h>
 #include <sched.h>
 #include <time.h>
+
+#include "ngfmdmasync.hpp"
 
 ngfmdmasync::ngfmdmasync(uint64_t TuneFrequency, uint32_t SR, int Channel, uint32_t FifoSize, bool UsePwm) :
         bufferdma(Channel, FifoSize, 2, 1) {
