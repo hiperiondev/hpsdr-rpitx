@@ -95,7 +95,7 @@ struct old_protocol_t {
      int CommonMercuryFreq;       //
      int freq;                    //
 };
-struct old_protocol_t op_settings = {
+static struct old_protocol_t op_settings = {
         .AlexTXrel = -1,
         .alexRXout = -1,
         .alexRXant = -1,

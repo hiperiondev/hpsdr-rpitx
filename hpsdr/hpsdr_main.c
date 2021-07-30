@@ -174,28 +174,6 @@ int main(int argc, char *argv[]) {
         if (!strncmp(argv[i], "-debug", 3)) {
             hpsdr_dbg_setlevel(1);
         }
-
-        /*
-         if (!strncmp(argv[i], "-help", 3) || !strncmp(argv[i], "--help", 3)) {
-         printf("Options:\n"
-         "    -atlas: \n"
-         "    -hermes: \n"
-         "    -griffin: \n"
-         "    -angelia: \n"
-         "    -orion: \n"
-         "    -orion2: \n"
-         "    -hermeslite: \n"
-         "    -hermeslite2: \n"
-         "    -c25: \n"
-         "    -diversity: \n"
-         "    -P1: \n"
-         "    -P2: \n"
-         "    -debug: \n"
-         "    -debugtx: \n"
-         "    -debugrx: \n");
-         exit(0);
-         }
-         */
     }
 
     switch (OLDDEVICE) {
@@ -541,11 +519,9 @@ int main(int argc, char *argv[]) {
             addr_old.sin_addr.s_addr = addr_from.sin_addr.s_addr;
             addr_old.sin_port = addr_from.sin_port;
 
-            //
             // The initial value of iqsamples.txptr defines the delay between
             // TX samples sent to the SDR and PURESIGNAL feedback
             // samples arriving
-            //
             iqsamples.txptr = OLDRTXLEN / 2;
             memset(iqsamples.isample, 0, OLDRTXLEN * sizeof(double));
             memset(iqsamples.qsample, 0, OLDRTXLEN * sizeof(double));
@@ -726,9 +702,7 @@ int main(int argc, char *argv[]) {
 }
 
 void* tx_hardware_thread(void *data) {
-    hpsdr_dbg_printf(1, "<Start tx_hardware_thread>\n");
-    //struct samples_t *iqsamples_tx = (struct samples_t*) data;
-
+    hpsdr_dbg_printf(1, "< Start tx_hardware_thread >\n");
     hpsdr_dbg_printf(1, " -- TX Frequency: %f\n", TX_Frequency);
     rpitx_iq_init(48000,  TX_Frequency);
     //rpitx_iq_init(48000, 147360); // only for test
@@ -740,6 +714,6 @@ void* tx_hardware_thread(void *data) {
     }
 
     rpitx_iq_deinit();
-    hpsdr_dbg_printf(1, "<Stop tx_hardware_thread>\n");
+    hpsdr_dbg_printf(1, "< Stop tx_hardware_thread >\n");
     return NULL;
 }
