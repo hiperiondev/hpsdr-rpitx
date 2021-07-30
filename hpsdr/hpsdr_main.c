@@ -177,46 +177,55 @@ int main(int argc, char *argv[]) {
     }
 
     switch (OLDDEVICE) {
+
     case DEVICE_METIS:
         hpsdr_dbg_printf(1, "DEVICE is METIS\n");
         c1 = 3.3;
         c2 = 0.090;
         break;
+
     case DEVICE_HERMES:
         hpsdr_dbg_printf(1, "DEVICE is HERMES\n");
         c1 = 3.3;
         c2 = 0.095;
         break;
+
     case DEVICE_GRIFFIN:
         hpsdr_dbg_printf(1, "DEVICE is GRIFFIN\n");
         c1 = 3.3;
         c2 = 0.095;
         break;
+
     case DEVICE_ANGELIA:
         hpsdr_dbg_printf(1, "DEVICE is ANGELIA\n");
         c1 = 3.3;
         c2 = 0.095;
         break;
+
     case DEVICE_HERMES_LITE:
         hpsdr_dbg_printf(1, "DEVICE is HermesLite V1\n");
         c1 = 3.3;
         c2 = 0.095;
         break;
+
     case DEVICE_HERMES_LITE2:
         hpsdr_dbg_printf(1, "DEVICE is HermesLite V2\n");
         c1 = 3.3;
         c2 = 0.095;
         break;
+
     case DEVICE_ORION:
         hpsdr_dbg_printf(1, "DEVICE is ORION\n");
         c1 = 5.0;
         c2 = 0.108;
         break;
+
     case DEVICE_ORION2:
         hpsdr_dbg_printf(1, "DEVICE is ORION MkII\n");
         c1 = 5.0;
         c2 = 0.108;
         break;
+
     case DEVICE_C25:
         hpsdr_dbg_printf(1, "DEVICE is STEMlab/C25\n");
         c1 = 3.3;
@@ -225,7 +234,7 @@ int main(int argc, char *argv[]) {
     }
 
     // Initialize the data in the sample tables
-    hpsdr_dbg_printf(1, ".... producing random noise\n");
+    hpsdr_dbg_printf(1, "... producing random noise\n");
     // Produce some noise
     j = RAND_MAX / 2;
     for (i = 0; i < LENNOISE; i++) {
@@ -233,7 +242,7 @@ int main(int argc, char *argv[]) {
         noiseQtab[i] = ((double) rand_r(&seed) / j - 1.0) * 0.00003;
     }
 
-    hpsdr_dbg_printf(1, ".... producing signals\n");
+    hpsdr_dbg_printf(1, "... producing signals\n");
     // Produce an 800 Hz tone at 0 dBm
     run = 0.0;
     off = 0.0;
@@ -246,7 +255,7 @@ int main(int argc, char *argv[]) {
 
     if (diversity) {
         hpsdr_dbg_printf(1, "DIVERSITY testing activated!\n");
-        hpsdr_dbg_printf(1, ".... producing some man-made noise\n");
+        hpsdr_dbg_printf(1, "... producing some man-made noise\n");
         memset(divtab, 0, LENDIV * sizeof(double));
         for (j = 1; j <= 200; j++) {
             run = 0.0;
@@ -317,7 +326,7 @@ int main(int argc, char *argv[]) {
     setsockopt(sock_TCP_Server, SOL_SOCKET, SO_RCVTIMEO, (void*) &tv, sizeof(tv));
 
     if (bind(sock_TCP_Server, (struct sockaddr*) &addr_udp, sizeof(addr_udp)) < 0) {
-        hpsdr_dbg_printf(1, "bind tcp");
+        hpsdr_dbg_printf(1, "ERROR: bind tcp\n");
         return EXIT_FAILURE;
     }
 
@@ -406,6 +415,7 @@ int main(int argc, char *argv[]) {
         hpsdr_dbg_printf(2, "-- code received: %04x (%d)\n", code, code);
 
         switch (code) {
+
         // PC to SDR transmission via process_ep2
         case 0x0201feef:
             // processing an invalid packet is too dangerous -- skip it!
@@ -431,7 +441,7 @@ int main(int argc, char *argv[]) {
             }
             break;
 
-            // respond to an incoming Metis detection request
+        // respond to an incoming Metis detection request
         case 0x0002feef:
             if (oldnew == 2) {
                 hpsdr_dbg_printf(1, "OldProtocol detection request IGNORED.\n");
@@ -477,7 +487,7 @@ int main(int argc, char *argv[]) {
 
             break;
 
-            // stop the SDR to PC transmission via handler_ep6
+        // stop the SDR to PC transmission via handler_ep6
         case 0x0004feef:
             hpsdr_dbg_printf(1, "STOP the transmission via handler_ep6 / code: 0x%08x\n", code);
 
@@ -497,6 +507,7 @@ int main(int argc, char *argv[]) {
             }
             break;
 
+        // START the PC-to-SDR handler thread
         case 0x0104feef:
         case 0x0204feef:
         case 0x0304feef:
@@ -542,17 +553,10 @@ int main(int argc, char *argv[]) {
 
             break;
 
+        // Non standard cases
         default:
-            // Here we have to handle the following "non standard" cases:
-            // OldProtocol "program"   packet
-            // OldProtocol "erase"     packet
-            // OldProtocol "Set IP"    packet
-            // NewProtocol "Discovery" packet
-            // NewProtocol "program"   packet
-            // NewProtocol "erase"     packet
-            // NewProtocol "Set IP"    packet
-            // NewProtocol "General"   packet  ==> this starts NewProtocol radio
 
+            // OldProtocol "program" packet
             if (bytes_read == 264 && buffer[0] == 0xEF && buffer[1] == 0xFE && buffer[2] == 0x03 && buffer[3] == 0x01) {
                 static long cnt = 0;
                 unsigned long blks = (buffer[4] << 24) + (buffer[5] << 16) + (buffer[6] << 8) + buffer[7];
@@ -566,6 +570,7 @@ int main(int argc, char *argv[]) {
                 break;
             }
 
+            // OldProtocol "erase" packet
             if (bytes_read == 64 && buffer[0] == 0xEF && buffer[1] == 0xFE && buffer[2] == 0x03 && buffer[3] == 0x02) {
                 hpsdr_dbg_printf(1, "OldProtocol Erase packet received:\n");
 
@@ -576,6 +581,7 @@ int main(int argc, char *argv[]) {
 
             }
 
+            // OldProtocol "Set IP" packet
             if (bytes_read == 63 && buffer[0] == 0xEF && buffer[1] == 0xFE && buffer[2] == 0x03) {
                 hpsdr_dbg_printf(1, "OldProtocol SetIP packet received:\n");
                 hpsdr_dbg_printf(1, "MAC address is %02x:%02x:%02x:%02x:%02x:%02x\n", buffer[3], buffer[4], buffer[5], buffer[6], buffer[7], buffer[8]);
@@ -587,6 +593,7 @@ int main(int argc, char *argv[]) {
                 break;
             }
 
+            // NewProtocol "Discovery" packet
             if (code == 0 && buffer[4] == 0x02) {
                 if (oldnew == 1) {
                     hpsdr_dbg_printf(1, "NewProtocol discovery packet IGNORED.\n");
@@ -600,6 +607,7 @@ int main(int argc, char *argv[]) {
                 break;
             }
 
+            // NewProtocol "erase" packet
             if (code == 0 && buffer[4] == 0x04) {
                 if (oldnew == 1) {
                     hpsdr_dbg_printf(1, "NewProtocol erase packet IGNORED.\n");
@@ -615,6 +623,7 @@ int main(int argc, char *argv[]) {
                 break;
             }
 
+            // NewProtocol "program" packet
             if (bytes_read == 265 && buffer[4] == 0x05) {
                 if (oldnew == 1) {
                     hpsdr_dbg_printf(1, "NewProtocol program packet IGNORED.\n");
@@ -637,6 +646,7 @@ int main(int argc, char *argv[]) {
                 break;
             }
 
+            // NewProtocol "Set IP" packet
             if (bytes_read == 60 && code == 0 && buffer[4] == 0x06) {
                 if (oldnew == 1) {
                     hpsdr_dbg_printf(1, "NewProtocol SetIP packet IGNORED.\n");
@@ -665,6 +675,7 @@ int main(int argc, char *argv[]) {
                 break;
             }
 
+            // NewProtocol "General" packet  ==> this starts NewProtocol radio
             if (bytes_read == 60 && buffer[4] == 0x00) {
                 if (oldnew == 1) {
                     hpsdr_dbg_printf(1, "NewProtocol General packet IGNORED.\n");
