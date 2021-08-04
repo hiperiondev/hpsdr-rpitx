@@ -32,7 +32,7 @@
 extern "C" {
 #endif
 
-void rpitx_iq_init(uint32_t SampleRate, uint64_t SetFrequency);
+void rpitx_iq_init(int rpitx_SampleRate, int rpitx_SetFrequency);
 void rpitx_iq_deinit(void);
 void rpitx_iq_send(struct samples_t *iqsamples_tx, int *enable);
 

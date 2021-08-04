@@ -52,25 +52,26 @@
 #include "hpsdr_newprotocol.h"
 #include "librpitx_c.h"
 
-       int OLDDEVICE;             //
-       int NEWDEVICE;             //
-       int enable_thread;         //
-       int active_thread;         //
-       int sock_TCP_Server;       //
-       int sock_TCP_Client;       //
-       int sock_udp;              //
-       int diversity;             //
-    double noiseItab[LENNOISE];   //
-    double noiseQtab[LENNOISE];   //
-    double divtab[LENDIV];        //
-    double toneItab[LENTONE];     //
-    double toneQtab[LENTONE];     //
-    double c1, c2;                //
-    struct samples_t iqsamples;   //
-     float TX_Frequency;          //
- pthread_t tx_hardware_thread_id; //
+      int OLDDEVICE;             //
+      int NEWDEVICE;             //
+      int enable_thread;         //
+      int active_thread;         //
+      int sock_TCP_Server;       //
+      int sock_TCP_Client;       //
+      int sock_udp;              //
+      int diversity;             //
+   double noiseItab[LENNOISE];   //
+   double noiseQtab[LENNOISE];   //
+   double divtab[LENDIV];        //
+   double toneItab[LENTONE];     //
+   double toneQtab[LENTONE];     //
+   double c1, c2;                //
+   struct samples_t iqsamples;   //
+    float TX_Frequency;          //
+pthread_t tx_hardware_thread_id; //
+      int IQBURST = 50;
 
-static int oldnew = 3; // 1: only P1, 2: only P2, 3: P1 and P2,
+static int oldnew = 3; // 1: only P1, 2: only P2, 3: P1 and P2
 
 struct sockaddr_in addr_new; //
 struct sockaddr_in addr_old; //
@@ -193,8 +194,12 @@ int main(int argc, char *argv[]) {
             oldnew = 2;
         }
 
-        if (!strncmp(argv[i], "-debug", 3)) {
+        if (!strncmp(argv[i], "-debug", 6)) {
             hpsdr_dbg_setlevel(1);
+        }
+
+        if (!strncmp(argv[i], "-iqburst", 8)) {
+            IQBURST =  atoi(argv[i+1]);
         }
     }
 
@@ -736,8 +741,8 @@ int main(int argc, char *argv[]) {
 void* tx_hardware_thread(void *data) {
     hpsdr_dbg_printf(1, "< Start tx_hardware_thread >\n");
     hpsdr_dbg_printf(1, " -- TX Frequency: %f\n", TX_Frequency);
-    rpitx_iq_init(48000,  TX_Frequency);
-    //rpitx_iq_init(48000, 147360 * 1e3); // only for test
+    //rpitx_iq_init(48000,  TX_Frequency);
+    rpitx_iq_init(48000, 147360000); // only for test
 
     while (1) {
         if (!enable_thread)

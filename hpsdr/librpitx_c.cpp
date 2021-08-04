@@ -28,30 +28,34 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+#include "util.hpp"
 #include "librpitx.hpp"
 #include "librpitx_c.h"
 #include "hpsdr_main.h"
 
-#define IQBURST 10
-#define OLDRTXLEN 64512
+//#define IQBURST 100
 
 static int Decimation = 1;
 int Harmonic = 1;
 
 iqdmasync *iqsender = NULL;
-std::complex<float> CIQBuffer[IQBURST];
 
-void rpitx_iq_init(uint32_t SampleRate, uint64_t SetFrequency) {
-    iqsender = new iqdmasync(SetFrequency, SampleRate, 14, IQBURST * 4, MODE_IQ);
+void rpitx_iq_init(int rpitx_SampleRate, int rpitx_SetFrequency) {
+    dbg_printf(0, " >> rpitx_iq_init  SampleRate:%d SetFrequency:%d <<\n", rpitx_SampleRate, rpitx_SetFrequency);
+    iqsender = new iqdmasync((uint64_t)rpitx_SetFrequency, (uint32_t)rpitx_SampleRate, 14, IQBURST * 4, MODE_IQ);
     iqsender->Setppm(0);
 }
 
 void rpitx_iq_deinit(void) {
+    dbg_printf(0, " >> rpitx_iq_deinit <<\n");
     if (iqsender != NULL)
         delete (iqsender);
 }
 
 void rpitx_iq_send(struct samples_t *iqsamples_tx, int *enable) {
+    dbg_printf(0, " >> Start rpitx iq send | IQBURST: %d <<\n", IQBURST);
+
+    std::complex<float> CIQBuffer[IQBURST];
     int CplxSampleNumber = 0;
     int rp_txptr = iqsamples_tx->txptr;
     while (1) {
@@ -76,4 +80,5 @@ void rpitx_iq_send(struct samples_t *iqsamples_tx, int *enable) {
             break;
         }
     }
+    dbg_printf(0, " >> Stop rpitx iq send <<\n");
 }

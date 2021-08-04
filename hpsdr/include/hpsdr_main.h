@@ -31,6 +31,8 @@
 #include <stdlib.h>
 #include <netinet/in.h>
 
+extern int IQBURST;
+
 // These two variables monitor whether the TX thread is active
 extern int enable_thread;
 extern int active_thread;
