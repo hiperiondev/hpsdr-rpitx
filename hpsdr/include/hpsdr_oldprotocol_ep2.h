@@ -1,8 +1,28 @@
 /*
- * hpsdr_oldprotocol_ep2.h
+ * Copyright 2021 Emiliano Gonzalez LU3VEA (lu3vea @ gmail . com))
+ * * Project Site: https://github.com/hiperiondev/hpsdr-rpitx *
  *
- *  Created on: 31 jul. 2021
- *      Author: egonzalez
+ * This is based on other projects:
+ *    librpitx (https://github.com/F5OEO/librpitx)
+ *    HPSDR simulator (https://github.com/g0orx/pihpsdr)
+ *
+ *    please contact their authors for more information.
+ *
+ * This is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3, or (at your option)
+ * any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this software; see the file COPYING.  If not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street,
+ * Boston, MA 02110-1301, USA.
+ *
  */
 
 #ifndef HPSDR_OLDPROTOCOL_EP2_H_
@@ -28,7 +48,7 @@
 #define EP2_ALETXREL(fr)             ((fr[4] >> 0) & 3)
 #define EP2_DUPLEX(fr)               ((fr[4] >> 2) & 1)
 #define EP2_TXFREQ(fr)               ((fr[4] | (fr[3] << 8) | (fr[2] << 16) | (fr[1] << 24)))
-#define EP2_RXFREQ(fr)               (fr[4] | (fr[3] << 8) | (fr[2] << 16) | (fr[1] << 24))
+#define EP2_RXFREQ(fr)               (fr[4] | (fr[3] << 8)  | (fr[2] << 16) | (fr[1] << 24))
 #define EP2_TXDRIVE(fr)              (fr[1])
 #define EP2_HERMESCONFIG(fr)         (fr[2] & 0x3F)
 #define EP2_ALEXMANUALHPFLPF(fr)     ((fr[2] >> 6) & 0x01)
@@ -75,10 +95,4 @@
 #define EP2_CWHANG(fr)               ((fr[1] << 2) | (fr[2] & 3))
 #define EP2_SIDETONEFREQ(fr)         ((fr[3] << 4) | (fr[4] & 255))
 
-
-
-
-
-
-
-#endif /* HPSDR_OLDPROTOCOL_EP2_H_ */
+#endif

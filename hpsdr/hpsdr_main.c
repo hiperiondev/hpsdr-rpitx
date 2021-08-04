@@ -52,34 +52,56 @@
 #include "hpsdr_newprotocol.h"
 #include "librpitx_c.h"
 
-int enable_thread;
-int active_thread;
-int sock_TCP_Server;
-int sock_TCP_Client;
-int sock_udp;
-struct sockaddr_in addr_new;
-struct sockaddr_in addr_old;
-int OLDDEVICE;
-int NEWDEVICE;
-double noiseItab[LENNOISE];
-double noiseQtab[LENNOISE];
-int diversity;
-double divtab[LENDIV];
-double toneItab[LENTONE];
-double toneQtab[LENTONE];
-struct samples_t iqsamples;
-float TX_Frequency;
-double c1, c2;
+       int OLDDEVICE;             //
+       int NEWDEVICE;             //
+       int enable_thread;         //
+       int active_thread;         //
+       int sock_TCP_Server;       //
+       int sock_TCP_Client;       //
+       int sock_udp;              //
+       int diversity;             //
+    double noiseItab[LENNOISE];   //
+    double noiseQtab[LENNOISE];   //
+    double divtab[LENDIV];        //
+    double toneItab[LENTONE];     //
+    double toneQtab[LENTONE];     //
+    double c1, c2;                //
+    struct samples_t iqsamples;   //
+     float TX_Frequency;          //
+ pthread_t tx_hardware_thread_id; //
 
-pthread_t tx_hardware_thread_id;
+static int oldnew = 3; // 1: only P1, 2: only P2, 3: P1 and P2,
+
+struct sockaddr_in addr_new; //
+struct sockaddr_in addr_old; //
+
 void* tx_hardware_thread(void *data);
-static int oldnew = 3;    // 1: only P1, 2: only P2, 3: P1 and P2,
 
 int main(int argc, char *argv[]) {
     int i, j, size;
     pthread_t thread;
-    uint8_t reply[11] = { 0xef, 0xfe, 2, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff, 0, 1 };
-    uint8_t id[4] = { 0xef, 0xfe, 1, 6 };
+
+    uint8_t reply[11] = {
+            0xef, //
+            0xfe, //
+            2,    //
+            0xaa, //
+            0xbb, //
+            0xcc, //
+            0xdd, //
+            0xee, //
+            0xff, //
+            0,    //
+            1     //
+    };
+
+    uint8_t id[4] = {
+            0xef, //
+            0xfe, //
+            1,    //
+            6     //
+    };
+
     uint32_t code;
     struct sockaddr_in addr_udp;
     uint8_t buffer[1032];
@@ -99,12 +121,12 @@ int main(int argc, char *argv[]) {
     sock_TCP_Server = -1;
     sock_TCP_Client = -1;
 
-    // Examples for METIS:     ATLAS bus with Mercury/Penelope boards
-    // Examples for HERMES:    ANAN10, ANAN100
-    // Examples for ANGELIA:   ANAN100D
-    // Examples for ORION:     ANAN200D
-    // Examples for ORION2:    ANAN7000, ANAN8000
-    // Examples for C25:       RedPitaya based boards with fixed ADC connections
+    // Examples for METIS:   ATLAS bus with Mercury/Penelope boards
+    // Examples for HERMES:  ANAN10, ANAN100
+    // Examples for ANGELIA: ANAN100D
+    // Examples for ORION:   ANAN200D
+    // Examples for ORION2:  ANAN7000, ANAN8000
+    // Examples for C25:     RedPitaya based boards with fixed ADC connections
 
     // seed value for random number generator
     seed = ((uintptr_t) &seed) & 0xffffff;
@@ -555,7 +577,6 @@ int main(int argc, char *argv[]) {
 
         // Non standard cases
         default:
-
             // OldProtocol "program" packet
             if (bytes_read == 264 && buffer[0] == 0xEF && buffer[1] == 0xFE && buffer[2] == 0x03 && buffer[3] == 0x01) {
                 static long cnt = 0;
@@ -716,7 +737,7 @@ void* tx_hardware_thread(void *data) {
     hpsdr_dbg_printf(1, "< Start tx_hardware_thread >\n");
     hpsdr_dbg_printf(1, " -- TX Frequency: %f\n", TX_Frequency);
     rpitx_iq_init(48000,  TX_Frequency);
-    //rpitx_iq_init(48000, 147360); // only for test
+    //rpitx_iq_init(48000, 147360 * 1e3); // only for test
 
     while (1) {
         if (!enable_thread)

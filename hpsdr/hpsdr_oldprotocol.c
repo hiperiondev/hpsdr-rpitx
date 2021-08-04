@@ -380,7 +380,7 @@ void op_process_ep2(uint8_t *frame) {
         chk_data(EP2_ALEXBYPASS(frame)      , op_settings.alex_bypass   , "ALEX Bypass HPFs"   , ep2_alexbyphpfs);
         chk_data(EP2_LNA6M(frame)           , op_settings.lna6m         , "ALEX 6m LNA"        , ep2_alex6mlna);
         chk_data(EP2_ALEXTRDISABLE(frame)   , op_settings.alexTRdisable , "ALEX T/R disable"   , ep2_alextrdis);
-        chk_data(EP2_ALEXLPF(frame)         , op_settings.alex_lpf, "ALEX LPF", ep2_alexlpf);
+        chk_data(EP2_ALEXLPF(frame)         , op_settings.alex_lpf      , "ALEX LPF", ep2_alexlpf);
         // reset TX level. Leve a little head-room for noise
         txdrv_dbl = (double) op_settings.txdrive * 0.00390625;  // div. by. 256
         break;
@@ -410,7 +410,7 @@ void op_process_ep2(uint8_t *frame) {
             // "zero attenuation"
             chk_data(EP2_RX1HLATTGAIN(frame), op_settings.rx_att[0], "RX1 HL ATT/GAIN", ep2_rx1hlattgain);
         } else {
-            chk_data(EP2_RX1ATT(frame), op_settings.rx_att[0], "RX1 ATT"        , ep2_rx1att);
+            chk_data(EP2_RX1ATT(frame)      , op_settings.rx_att[0], "RX1 ATT"        , ep2_rx1att);
             chk_data(EP2_RX1ATTENABLE(frame), op_settings.rx1_attE , "RX1 ATT enable" , ep2_rx1attenable);
             //
             // Some hardware emulates "switching off ATT and preamp" by setting ATT
@@ -455,7 +455,7 @@ void op_process_ep2(uint8_t *frame) {
         chk_data(EP2_RX5ADC(frame), op_settings.rx_adc[4], "RX5 ADC", ep2_rx5adc);
         chk_data(EP2_RX6ADC(frame), op_settings.rx_adc[5], "RX6 ADC", ep2_rx6adc);
         chk_data(EP2_RX7ADC(frame), op_settings.rx_adc[6], "RX7 ADC", ep2_rx7adc);
-        chk_data(EP2_TXATT(frame), op_settings.txatt    , "TX ATT" , ep2_txatt);
+        chk_data(EP2_TXATT(frame) , op_settings.txatt    , "TX ATT" , ep2_txatt);
         txatt_dbl = pow(10.0, -0.05 * (double) op_settings.txatt);
         if (OLDDEVICE == DEVICE_C25) {
             // RedPitaya: Hard-wired ADC settings.
