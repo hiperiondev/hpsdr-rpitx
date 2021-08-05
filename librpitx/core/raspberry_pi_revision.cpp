@@ -322,7 +322,7 @@ static int revisionToPcbRevision[] = {
 // Remove leading and trailing whitespace from a string.
 
 static char* trimWhiteSpace(char *string) {
-    dbg_printf(2,"> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
+    librpitx_dbg_printf(2,"> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     if (string == NULL) {
         return NULL;
     }
@@ -347,14 +347,14 @@ static char* trimWhiteSpace(char *string) {
     }
 
     *(end + 1) = 0;
-    dbg_printf(2,"< func: %s |\n", __func__);
+    librpitx_dbg_printf(2,"< func: %s |\n", __func__);
     return string;
 }
 
 //-------------------------------------------------------------------------
 
 int getRaspberryPiRevision(void) {
-    dbg_printf(2,"> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
+    librpitx_dbg_printf(2,"> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     int raspberryPiRevision = 0;
 
     FILE *fp = fopen("/proc/cpuinfo", "r");
@@ -378,23 +378,23 @@ int getRaspberryPiRevision(void) {
     }
 
     fclose(fp);
-    dbg_printf(2,"< func: %s |\n", __func__);
+    librpitx_dbg_printf(2,"< func: %s |\n", __func__);
     return raspberryPiRevision;
 }
 
 //-------------------------------------------------------------------------
 
 int getRaspberryPiInformation(RASPBERRY_PI_INFO_T *info) {
-    dbg_printf(2,"> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
+    librpitx_dbg_printf(2,"> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     int revision = getRaspberryPiRevision();
-    dbg_printf(2,"< func: %s |\n", __func__);
+    librpitx_dbg_printf(2,"< func: %s |\n", __func__);
     return getRaspberryPiInformationForRevision(revision, info);
 }
 
 //-------------------------------------------------------------------------
 
 int getRaspberryPiInformationForRevision(int revision, RASPBERRY_PI_INFO_T *info) {
-    dbg_printf(2,"> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
+    librpitx_dbg_printf(2,"> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     int result = 0;
 
     if (info != NULL) {
@@ -511,14 +511,14 @@ int getRaspberryPiInformationForRevision(int revision, RASPBERRY_PI_INFO_T *info
             break;
         }
     }
-    dbg_printf(2,"< func: %s |\n", __func__);
+    librpitx_dbg_printf(2,"< func: %s |\n", __func__);
     return result;
 }
 
 //-------------------------------------------------------------------------
 
 const char* raspberryPiMemoryToString(RASPBERRY_PI_MEMORY_T memory) {
-    dbg_printf(2,"> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
+    librpitx_dbg_printf(2,"> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     const char *string = "unknown";
 
     switch (memory) {
@@ -534,14 +534,14 @@ const char* raspberryPiMemoryToString(RASPBERRY_PI_MEMORY_T memory) {
     default:
         break;
     }
-    dbg_printf(2,"< func: %s |\n", __func__);
+    librpitx_dbg_printf(2,"< func: %s |\n", __func__);
     return string;
 }
 
 //-------------------------------------------------------------------------
 
 const char* raspberryPiProcessorToString(RASPBERRY_PI_PROCESSOR_T processor) {
-    dbg_printf(2,"> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
+    librpitx_dbg_printf(2,"> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     const char *string = "unknown";
 
     switch (processor) {
@@ -557,14 +557,14 @@ const char* raspberryPiProcessorToString(RASPBERRY_PI_PROCESSOR_T processor) {
     default:
         break;
     }
-    dbg_printf(2,"< func: %s |\n", __func__);
+    librpitx_dbg_printf(2,"< func: %s |\n", __func__);
     return string;
 }
 
 //-------------------------------------------------------------------------
 
 const char* raspberryPiI2CDeviceToString(RASPBERRY_PI_I2C_DEVICE_T i2cDevice) {
-    dbg_printf(2,"> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
+    librpitx_dbg_printf(2,"> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     const char *string = "unknown";
 
     switch (i2cDevice) {
@@ -577,14 +577,14 @@ const char* raspberryPiI2CDeviceToString(RASPBERRY_PI_I2C_DEVICE_T i2cDevice) {
     default:
         break;
     }
-    dbg_printf(2,"< func: %s |\n", __func__);
+    librpitx_dbg_printf(2,"< func: %s |\n", __func__);
     return string;
 }
 
 //-------------------------------------------------------------------------
 
 const char* raspberryPiModelToString(RASPBERRY_PI_MODEL_T model) {
-    dbg_printf(2,"> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
+    librpitx_dbg_printf(2,"> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     const char *string = "unknown";
 
     switch (model) {
@@ -618,14 +618,14 @@ const char* raspberryPiModelToString(RASPBERRY_PI_MODEL_T model) {
     default:
         break;
     }
-    dbg_printf(2,"< func: %s |\n", __func__);
+    librpitx_dbg_printf(2,"< func: %s |\n", __func__);
     return string;
 }
 
 //-------------------------------------------------------------------------
 
 const char* raspberryPiManufacturerToString(RASPBERRY_PI_MANUFACTURER_T manufacturer) {
-    dbg_printf(2,"> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
+    librpitx_dbg_printf(2,"> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     const char *string = "unknown";
 
     switch (manufacturer) {
@@ -644,6 +644,6 @@ const char* raspberryPiManufacturerToString(RASPBERRY_PI_MANUFACTURER_T manufact
     default:
         break;
     }
-    dbg_printf(2,"< func: %s |\n", __func__);
+    librpitx_dbg_printf(2,"< func: %s |\n", __func__);
     return string;
 }

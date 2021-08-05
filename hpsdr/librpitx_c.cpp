@@ -41,19 +41,19 @@ int Harmonic = 1;
 iqdmasync *iqsender = NULL;
 
 void rpitx_iq_init(int rpitx_SampleRate, int rpitx_SetFrequency) {
-    dbg_printf(0, " >> rpitx_iq_init  SampleRate:%d SetFrequency:%d <<\n", rpitx_SampleRate, rpitx_SetFrequency);
+    librpitx_dbg_printf(0, "rpitx init  SampleRate:%d SetFrequency:%d\n", rpitx_SampleRate, rpitx_SetFrequency);
     iqsender = new iqdmasync((uint64_t)rpitx_SetFrequency, (uint32_t)rpitx_SampleRate, 14, IQBURST * 4, MODE_IQ);
     iqsender->Setppm(0);
 }
 
 void rpitx_iq_deinit(void) {
-    dbg_printf(0, " >> rpitx_iq_deinit <<\n");
+    librpitx_dbg_printf(0, "rpitx deinit\n");
     if (iqsender != NULL)
         delete (iqsender);
 }
 
 void rpitx_iq_send(struct samples_t *iqsamples_tx, int *enable) {
-    dbg_printf(0, " >> Start rpitx iq send | IQBURST: %d <<\n", IQBURST);
+    librpitx_dbg_printf(0, "Start rpitx iq send | IQBURST: %d\n", IQBURST);
 
     std::complex<float> CIQBuffer[IQBURST];
 
@@ -74,7 +74,7 @@ void rpitx_iq_send(struct samples_t *iqsamples_tx, int *enable) {
             if (tx_drive < 128) {
                 tx_drive = 128;
             } else
-                dbg_printf(0, "                TX DRIVE= %d%\n", (int) ((tx_drive / 255) * 100));
+                librpitx_dbg_printf(0, "                TX DRIVE= %d%\n", (int) ((tx_drive / 255) * 100));
         }
 
         if (rp_txptr > iqsamples_tx->txptr)
@@ -97,5 +97,5 @@ void rpitx_iq_send(struct samples_t *iqsamples_tx, int *enable) {
             break;
         }
     }
-    dbg_printf(0, " >> Stop rpitx iq send <<\n");
+    librpitx_dbg_printf(0, "Stop rpitx iq send\n");
 }

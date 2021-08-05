@@ -311,7 +311,7 @@ void np_general_packet(unsigned char *buffer) {
 }
 
 void* np_ddc_thread(void *data) {
-    hpsdr_dbg_printf(1, "-- Start ddc_specific_thread port: %d\n", np_settings.ddc_port);
+    hpsdr_dbg_printf(1, "Start ddc_specific_thread port: %d\n", np_settings.ddc_port);
     int sock;
     struct sockaddr_in addr;
     socklen_t lenaddr = sizeof(addr);
@@ -433,7 +433,7 @@ void* np_ddc_thread(void *data) {
 }
 
 void* np_duc_thread(void *data) {
-    hpsdr_dbg_printf(1, "-- Start duc_specific_thread port: %d\n", np_settings.duc_port);
+    hpsdr_dbg_printf(1, "Start duc_specific_thread port: %d\n", np_settings.duc_port);
     int sock;
     struct sockaddr_in addr;
     socklen_t lenaddr = sizeof(addr);
@@ -546,7 +546,7 @@ void* np_duc_thread(void *data) {
 }
 
 void* np_highprio_thread(void *data) {
-    hpsdr_dbg_printf(1, "-- Start highprio_thread port: %d\n", np_settings.hp_port);
+    hpsdr_dbg_printf(1, "Start highprio_thread port: %d\n", np_settings.hp_port);
     int sock;
     struct sockaddr_in addr;
     socklen_t lenaddr = sizeof(addr);
@@ -789,7 +789,7 @@ void* np_rx_thread(void *data) {
     if (myddc < 0 || myddc >= NUMRECEIVERS)
         return NULL;
 
-    hpsdr_dbg_printf(1, "-- Start rx_thread %d port: %d\n", myddc, np_settings.ddc0_port + myddc);
+    hpsdr_dbg_printf(1, "Start rx_thread %d port: %d\n", myddc, np_settings.ddc0_port + myddc);
 
     seqnum = 0;
     // unique seed value for random number generator
@@ -980,7 +980,7 @@ void* np_rx_thread(void *data) {
 
 // This thread receives data (TX samples) from the PC
 void* np_tx_thread(void *data) {
-    hpsdr_dbg_printf(1, "-- Start tx_thread port: %d\n", np_settings.duc0_port);
+    hpsdr_dbg_printf(1, "Start tx_thread port: %d\n", np_settings.duc0_port);
     int sock;
     struct sockaddr_in addr;
     socklen_t lenaddr = sizeof(addr);
@@ -1072,7 +1072,7 @@ void* np_tx_thread(void *data) {
 }
 
 void* np_send_highprio_thread(void *data) {
-    hpsdr_dbg_printf(1, "-- Start send_highprio_thread port: %d\n", np_settings.shp_port);
+    hpsdr_dbg_printf(1, "Start send_highprio_thread port: %d\n", np_settings.shp_port);
     int sock;
     struct sockaddr_in addr;
     unsigned long seqnum;
@@ -1142,7 +1142,7 @@ void* np_send_highprio_thread(void *data) {
 
 // This thread receives the audio samples and plays them
 void* np_audio_thread(void *data) {
-    hpsdr_dbg_printf(1, "-- Start audio_thread port: %d\n", np_settings.audio_port);
+    hpsdr_dbg_printf(1, "Start audio_thread port: %d\n", np_settings.audio_port);
     int sock;
     struct sockaddr_in addr;
     socklen_t lenaddr = sizeof(addr);
@@ -1210,7 +1210,7 @@ void* np_audio_thread(void *data) {
 
 // The microphone thread just sends silence
 void* np_mic_thread(void *data) {
-    hpsdr_dbg_printf(1, "-- Start mic_thread port: %d\n", np_settings.mic_port);
+    hpsdr_dbg_printf(1, "Start mic_thread port: %d\n", np_settings.mic_port);
     int sock;
     struct sockaddr_in addr;
     unsigned long seqnum;

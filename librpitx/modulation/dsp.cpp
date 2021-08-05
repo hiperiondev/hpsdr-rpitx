@@ -21,18 +21,18 @@
 #include "util.hpp"
 
 dsp::dsp() {
-    dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
+    librpitx_dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     frequency = 0;
     amplitude = 0;
     samplerate = 0;
-    dbg_printf(2, "< func: %s |\n", __func__);
+    librpitx_dbg_printf(2, "< func: %s |\n", __func__);
 }
 
 dsp::dsp(uint32_t srate) : samplerate(srate) {
-    dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
+    librpitx_dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     frequency = 0;
     amplitude = 0;
-    dbg_printf(2, "< func: %s |\n", __func__);
+    librpitx_dbg_printf(2, "< func: %s |\n", __func__);
 }
 
 #define ln(x) (log(x)/log(2.718281828459045235f))
@@ -41,43 +41,43 @@ dsp::dsp(uint32_t srate) : samplerate(srate) {
 
 // Normalize to [-180,180):
 inline double dsp::constrainAngle(double x) {
-    dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
+    librpitx_dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     x = fmod(x + M_PI, 2 * M_PI);
     if (x < 0)
         x += 2 * M_PI;
-    dbg_printf(2, "< func: %s |\n", __func__);
+    librpitx_dbg_printf(2, "< func: %s |\n", __func__);
     return x - M_PI;
 
 }
 
 // convert to [-360,360]
 inline double dsp::angleConv(double angle) {
-    dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
-    dbg_printf(2, "< func: %s |\n", __func__);
+    librpitx_dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
+    librpitx_dbg_printf(2, "< func: %s |\n", __func__);
     return fmod(constrainAngle(angle), 2 * M_PI);
 }
 
 inline double dsp::angleDiff(double a, double b) {
-    dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
+    librpitx_dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     double dif = fmod(b - a + M_PI, 2 * M_PI);
     if (dif < 0)
         dif += 2 * M_PI;
-    dbg_printf(2, "< func: %s |\n", __func__);
+    librpitx_dbg_printf(2, "< func: %s |\n", __func__);
     return dif - M_PI;
 }
 
 inline double dsp::unwrap(double previousAngle, double newAngle) {
-    dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
-    dbg_printf(2, "< func: %s |\n", __func__);
+    librpitx_dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
+    librpitx_dbg_printf(2, "< func: %s |\n", __func__);
     return previousAngle - angleDiff(newAngle, angleConv(previousAngle));
 }
 
 int dsp::arctan2(int y, int x) { // Should be replaced with fast_atan2 from rtl_fm
-    dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
+    librpitx_dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     int abs_y = abs(y);
     int angle;
     if ((x == 0) && (y == 0)) {
-        dbg_printf(2, "< func: %s -a|\n", __func__);
+        librpitx_dbg_printf(2, "< func: %s -a|\n", __func__);
         return 0;
     }
     if (x >= 0) {
@@ -85,12 +85,12 @@ int dsp::arctan2(int y, int x) { // Should be replaced with fast_atan2 from rtl_
     } else {
         angle = 135 - 45 * (x + abs_y) / ((abs_y - x) == 0 ? 1 : (abs_y - x));
     }
-    dbg_printf(2, "< func: %s -b|\n", __func__);
+    librpitx_dbg_printf(2, "< func: %s -b|\n", __func__);
     return (y < 0) ? -angle : angle; // negate if in quad III or IV
 }
 
 void dsp::pushsample(std::complex<float> sample) {
-    dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
+    librpitx_dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     amplitude = abs(sample);
 
     double phase = atan2(sample.imag(), sample.real());
@@ -101,5 +101,5 @@ void dsp::pushsample(std::complex<float> sample) {
 
     frequency = (dp * (double) samplerate) / (2.0 * M_PI);
     prev_phase = phase;
-    dbg_printf(2, "< func: %s |\n", __func__);
+    librpitx_dbg_printf(2, "< func: %s |\n", __func__);
 }

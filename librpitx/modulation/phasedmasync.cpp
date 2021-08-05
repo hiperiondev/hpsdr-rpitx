@@ -34,11 +34,11 @@ phasedmasync::phasedmasync(uint64_t TuneFrequency, uint32_t SampleRateIn, int Nu
     tunefreq = TuneFrequency * NumberOfPhase;
 #define MAX_PWM_RATE 360000000
     if (tunefreq > MAX_PWM_RATE)
-        dbg_printf(1, "Critical error : Frequency to high > %d\n", MAX_PWM_RATE / NumberOfPhase);
+        librpitx_dbg_printf(1, "Critical error : Frequency to high > %d\n", MAX_PWM_RATE / NumberOfPhase);
     if ((NumberOfPhase == 2) || (NumberOfPhase == 4) || (NumberOfPhase == 8) || (NumberOfPhase == 16) || (NumberOfPhase == 32))
         NumbPhase = NumberOfPhase;
     else
-        dbg_printf(1, "PWM critical error: %d is not a legal number of phase\n", NumberOfPhase);
+        librpitx_dbg_printf(1, "PWM critical error: %d is not a legal number of phase\n", NumberOfPhase);
     clkgpio::SetAdvancedPllMode(true);
 
     clkgpio::ComputeBestLO(tunefreq, 0); // compute PWM divider according to MasterPLL clkgpio::PllFixDivider
@@ -48,7 +48,7 @@ phasedmasync::phasedmasync(uint64_t TuneFrequency, uint32_t SampleRateIn, int Nu
     freqctl &= 0xFFFFF; // Fractionnal is 20bits
     uint32_t FracMultiply = freqctl & 0xFFFFF;
     clkgpio::SetMasterMultFrac(IntMultiply, FracMultiply);
-    dbg_printf(1, "PWM Mult %d Frac %d Div %d\n", IntMultiply, FracMultiply, clkgpio::PllFixDivider);
+    librpitx_dbg_printf(1, "PWM Mult %d Frac %d Div %d\n", IntMultiply, FracMultiply, clkgpio::PllFixDivider);
 
     pwmgpio::clk.gpioreg[PWMCLK_DIV] = 0x5A000000 | ((clkgpio::PllFixDivider) << 12) | pwmgpio::pllnumber; // PWM clock input divider
     usleep(100);
@@ -82,7 +82,7 @@ phasedmasync::phasedmasync(uint64_t TuneFrequency, uint32_t SampleRateIn, int Nu
         ZeroPhase = 0xFFFF0000;
         break; //1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 //32
     default:
-        dbg_printf(1, "Zero phase not initialized\n");
+        librpitx_dbg_printf(1, "Zero phase not initialized\n");
         break;
     }
 

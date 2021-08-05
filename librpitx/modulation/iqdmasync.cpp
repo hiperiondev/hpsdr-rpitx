@@ -24,7 +24,7 @@
 
 iqdmasync::iqdmasync(uint64_t TuneFrequency, uint32_t SR, int Channel, uint32_t FifoSize, int Mode) :
         bufferdma(Channel, FifoSize, 4, 3) {
-    dbg_printf(2, "> func: (iqdmasync::iqdmasync) %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
+    librpitx_dbg_printf(2, "> func: (iqdmasync::iqdmasync) %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
 // Usermem :
 // FRAC frequency
 // PAD Amplitude
@@ -55,24 +55,24 @@ iqdmasync::iqdmasync(uint64_t TuneFrequency, uint32_t SR, int Channel, uint32_t 
     // Note : Spurious are at +/-(19.2MHZ/2^20)*Div*N : (N=1,2,3...) So we need to have a big div to spurious away BUT
     // Spurious are ALSO at +/-(19.2MHZ/2^20)*(2^20-Div)*N
     // Max spurious avoid is to be in the center ! Theory shoud be that spurious are set away at 19.2/2= 9.6Mhz ! But need to get account of div of PLLClock
-    dbg_printf(2, "< func: %s |\n", __func__);
+    librpitx_dbg_printf(2, "< func: %s |\n", __func__);
 }
 
 iqdmasync::~iqdmasync() {
-    dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
+    librpitx_dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     clkgpio::gengpio.gpioreg[GPFSEL0] = Originfsel;
     clkgpio::disableclk(4);
-    dbg_printf(2, "< func: %s |\n", __func__);
+    librpitx_dbg_printf(2, "< func: %s |\n", __func__);
 }
 
 void iqdmasync::SetPhase(bool inversed) {
-    dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
+    librpitx_dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     clkgpio::SetPhase(inversed);
-    dbg_printf(2, "< func: %s |\n", __func__);
+    librpitx_dbg_printf(2, "< func: %s |\n", __func__);
 }
 
 void iqdmasync::SetDmaAlgo() {
-    dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
+    librpitx_dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     dma_cb_t *cbp = cbarray;
     for (uint32_t samplecnt = 0; samplecnt < buffersize; samplecnt++) {
 
@@ -98,11 +98,11 @@ void iqdmasync::SetDmaAlgo() {
     cbp--;
     cbp->next = mem_virt_to_phys(cbarray); // We loop to the first CB
     //dbg_printf(1,"Last cbp :  src %x dest %x next %x\n",cbp->src,cbp->dst,cbp->next);
-    dbg_printf(2, "< func: %s |\n", __func__);
+    librpitx_dbg_printf(2, "< func: %s |\n", __func__);
 }
 
 void iqdmasync::SetIQSample(uint32_t Index, std::complex<float> sample, int Harmonic) {
-    dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
+    librpitx_dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     Index = Index % buffersize;
     mydsp.pushsample(sample);
     // if(mydsp.frequency>2250) mydsp.frequency=2250;
@@ -128,11 +128,11 @@ void iqdmasync::SetIQSample(uint32_t Index, std::complex<float> sample, int Harm
 
     //dbg_printf(1,"amp%f %d\n",mydsp.amplitude,IntAmplitudePAD);
     PushSample(Index);
-    dbg_printf(2, "< func: %s |\n", __func__);
+    librpitx_dbg_printf(2, "< func: %s |\n", __func__);
 }
 
 void iqdmasync::SetFreqAmplitudeSample(uint32_t Index, std::complex<float> sample, int Harmonic) {
-    dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
+    librpitx_dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     Index = Index % buffersize;
 
     sampletab[Index * registerbysample] = (0x5A << 24) | GetMasterFrac(sample.real() / Harmonic); //Frequency
@@ -158,11 +158,11 @@ void iqdmasync::SetFreqAmplitudeSample(uint32_t Index, std::complex<float> sampl
 
     //dbg_printf(1,"amp%f %d\n",mydsp.amplitude,IntAmplitudePAD);
     PushSample(Index);
-    dbg_printf(2, "< func: %s |\n", __func__);
+    librpitx_dbg_printf(2, "< func: %s |\n", __func__);
 }
 
 void iqdmasync::SetIQSamples(std::complex<float> *sample, size_t Size, int Harmonic = 1) {
-    dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
+    librpitx_dbg_printf(2, "> func: %s (file %s | line %d)\n", __func__, __FILE__, __LINE__);
     size_t NbWritten = 0;
     //int OSGranularity=100;
 
@@ -184,7 +184,7 @@ void iqdmasync::SetIQSamples(std::complex<float> *sample, size_t Size, int Harmo
             //dbg_printf(1,"buffer size %d Available %d SampleRate %d Sleep %d\n",buffersize,Available,SampleRate,TimeToSleep);
             usleep(TimeToSleep);
         } else {
-            dbg_printf(1, "No Sleep %d\n", TimeToSleep);
+            librpitx_dbg_printf(1, "No Sleep %d\n", TimeToSleep);
             //sched_yield();
         }
 
@@ -212,5 +212,5 @@ void iqdmasync::SetIQSamples(std::complex<float> *sample, size_t Size, int Harmo
             }
         }
     }
-    dbg_printf(2, "< func: %s |\n", __func__);
+    librpitx_dbg_printf(2, "< func: %s |\n", __func__);
 }

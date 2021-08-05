@@ -74,7 +74,7 @@ void ookburst::SetDmaAlgo() {
 }
 void ookburst::SetSymbols(unsigned char *Symbols, uint32_t Size) {
     if (Size > buffersize - 2) {
-        dbg_printf(1, "Buffer overflow\n");
+        librpitx_dbg_printf(1, "Buffer overflow\n");
         return;
     }
 
@@ -135,7 +135,7 @@ void ookbursttiming::SendMessage(SampleOOKTiming *TabSymbols, size_t Size) {
         for (size_t j = 0; j < TabSymbols[i].duration / 10; j++) {
             ookrenderbuffer[n++] = TabSymbols[i].value;
             if (n >= m_MaxMessage) {
-                dbg_printf(1, "OOK Message too long abort time(%d/%d)\n", n, m_MaxMessage);
+                librpitx_dbg_printf(1, "OOK Message too long abort time(%d/%d)\n", n, m_MaxMessage);
                 return;
             }
         }

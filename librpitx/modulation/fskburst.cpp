@@ -41,7 +41,7 @@ fskburst::fskburst(uint64_t TuneFrequency, float SymbolRate, float Deviation, in
 
     //Should be obligatory place before setdmaalgo
     Originfsel = clkgpio::gengpio.gpioreg[GPFSEL0];
-    dbg_printf(1, "FSK Origin fsel %x\n", Originfsel);
+    librpitx_dbg_printf(1, "FSK Origin fsel %x\n", Originfsel);
 
     SetDmaAlgo();
 }
@@ -80,11 +80,11 @@ void fskburst::SetDmaAlgo() {
 
     cbp->next = 0; // Stop DMA
 
-    dbg_printf(2, "Last cbp :  src %x dest %x next %x\n", cbp->src, cbp->dst, cbp->next);
+    librpitx_dbg_printf(2, "Last cbp :  src %x dest %x next %x\n", cbp->src, cbp->dst, cbp->next);
 }
 void fskburst::SetSymbols(unsigned char *Symbols, uint32_t Size) {
     if (Size > buffersize - 3) {
-        dbg_printf(1, "Buffer overflow\n");
+        librpitx_dbg_printf(1, "Buffer overflow\n");
         return;
     }
 
@@ -102,7 +102,7 @@ void fskburst::SetSymbols(unsigned char *Symbols, uint32_t Size) {
             if (i < Size - 1) {
                 sampletab[i * SR_upsample + j + SR_upsample - Ramp] = (0x5A << 24)
                         | GetMasterFrac(freqdeviation * Symbols[i] + j * (freqdeviation * Symbols[i + 1] - freqdeviation * Symbols[i]) / (float) Ramp);
-                dbg_printf(2, "Ramp %f ->%f : %d %f\n", freqdeviation * Symbols[i], freqdeviation * Symbols[i + 1], j,
+                librpitx_dbg_printf(2, "Ramp %f ->%f : %d %f\n", freqdeviation * Symbols[i], freqdeviation * Symbols[i + 1], j,
                         freqdeviation * Symbols[i] + j * (freqdeviation * Symbols[i + 1] - freqdeviation * Symbols[i]) / (float) Ramp);
             } else {
                 sampletab[i * SR_upsample + j + SR_upsample - Ramp] = (0x5A << 24) | GetMasterFrac(freqdeviation * Symbols[i]);
@@ -122,6 +122,6 @@ void fskburst::SetSymbols(unsigned char *Symbols, uint32_t Size) {
         //dbg_printf(1,"GPIO %x\n",clkgpio::gengpio.gpioreg[GPFSEL0]);
         usleep(100);
     }
-    dbg_printf(1, "FSK burst end Tx\n", cbp->src, cbp->dst, cbp->next);
+    librpitx_dbg_printf(1, "FSK burst end Tx\n", cbp->src, cbp->dst, cbp->next);
     usleep(100); //To be sure last symbol Tx ?
 }

@@ -94,10 +94,10 @@ void ngfmdmasync::SetFrequencySamples(float *sample, size_t Size) {
         int Available = GetBufferAvailable();
         int TimeToSleep = 1e6 * ((int) buffersize * 3 / 4 - Available) / SampleRate - OSGranularity; // Sleep for theorically fill 3/4 of Fifo
         if (TimeToSleep > 0) {
-            dbg_printf(1, "buffer size %d Available %d SampleRate %d Sleep %d\n", buffersize, Available, SampleRate, TimeToSleep);
+            librpitx_dbg_printf(1, "buffer size %d Available %d SampleRate %d Sleep %d\n", buffersize, Available, SampleRate, TimeToSleep);
             usleep(TimeToSleep);
         } else {
-            dbg_printf(1, "No Sleep %d\n", TimeToSleep);
+            librpitx_dbg_printf(1, "No Sleep %d\n", TimeToSleep);
             sched_yield();
         }
         clock_gettime(CLOCK_REALTIME, &gettime_now);
@@ -105,7 +105,7 @@ void ngfmdmasync::SetFrequencySamples(float *sample, size_t Size) {
         if (time_difference < 0)
             time_difference += 1E9;
         int NewAvailable = GetBufferAvailable();
-        dbg_printf(1, "Newavailable %d Measure samplerate=%d\n", NewAvailable, (int) ((GetBufferAvailable() - Available) * 1e9 / time_difference));
+        librpitx_dbg_printf(1, "Newavailable %d Measure samplerate=%d\n", NewAvailable, (int) ((GetBufferAvailable() - Available) * 1e9 / time_difference));
         Available = NewAvailable;
         int Index = GetUserMemIndex();
         int ToWrite = ((int) Size - (int) NbWritten) < Available ? Size - NbWritten : Available;

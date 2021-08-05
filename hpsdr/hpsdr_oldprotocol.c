@@ -423,7 +423,7 @@ void op_process_ep2(uint8_t *frame) {
 }
 
 void* op_handler_ep6(void *arg) {
-    hpsdr_dbg_printf(1, "< Start handler_ep6 >\n");
+    hpsdr_dbg_printf(1, "Start handler ep6\n");
     int i, j, k, n, size;
     int header_offset;
     uint32_t counter;
@@ -677,6 +677,6 @@ void* op_handler_ep6(void *arg) {
         }
     }
     active_thread = 0;
-    hpsdr_dbg_printf(1, "<Stop handler_ep6 >\n");
+    hpsdr_dbg_printf(1, "Stop handler_ep6\n");
     return NULL;
 }

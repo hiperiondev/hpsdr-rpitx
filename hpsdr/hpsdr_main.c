@@ -69,7 +69,7 @@
    struct samples_t iqsamples;   //
     float TX_Frequency;          //
 pthread_t tx_hardware_thread_id; //
-      int IQBURST = 60;
+      int IQBURST = 70;
 
 static int oldnew = 3; // 1: only P1, 2: only P2, 3: P1 and P2
 
@@ -739,8 +739,8 @@ int main(int argc, char *argv[]) {
 }
 
 void* tx_hardware_thread(void *data) {
-    hpsdr_dbg_printf(1, "< Start tx_hardware_thread >\n");
-    hpsdr_dbg_printf(1, " -- TX Frequency: %f\n", TX_Frequency);
+    hpsdr_dbg_printf(1, "Start tx_hardware_thread\n");
+    hpsdr_dbg_printf(1, "TX Frequency: %f\n", TX_Frequency);
     rpitx_iq_init(48000, TX_Frequency);
     //rpitx_iq_init(48000, 147360000); // only for test
 
@@ -751,6 +751,6 @@ void* tx_hardware_thread(void *data) {
     }
 
     rpitx_iq_deinit();
-    hpsdr_dbg_printf(1, "< Stop tx_hardware_thread >\n");
+    hpsdr_dbg_printf(1, "Stop tx_hardware_thread\n");
     return NULL;
 }

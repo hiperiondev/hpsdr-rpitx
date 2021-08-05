@@ -17,34 +17,34 @@
 
 #include "util.hpp"
 
-static int debug_level = 0;
-int debug_id = 1;
+static int librpitx_debug_level = 0;
+int librpitx_debug_id = 1;
 
-void dbg_setlevel(int Level) {
-    debug_level = Level;
+void librpitx_dbg_setlevel(int Level) {
+    librpitx_debug_level = Level;
 }
 
-int dbg_getlevel() {
-    return debug_level;
+int librpitx_dbg_getlevel() {
+    return librpitx_debug_level;
 }
 
-void dbg_printf(int Level, const char *fmt, ...) {
-    if (Level <= debug_level) {
+void librpitx_dbg_printf(int Level, const char *fmt, ...) {
+    if (Level <= librpitx_debug_level) {
         bool debug_id_m = false;
         va_list args;
         va_start(args, fmt);
         if (fmt[0] == '<') {
-            --debug_id;
+            --librpitx_debug_id;
             debug_id_m = true;
-            fprintf(stderr, "%*c(%d)", debug_id, ' ', debug_id);
+            fprintf(stderr, "[rpitx] %*c(%d)", librpitx_debug_id, ' ', librpitx_debug_id);
         }
         if (fmt[0] == '>') {
             debug_id_m = true;
-            fprintf(stderr, "%*c(%d)", debug_id, ' ', debug_id);
-            ++debug_id;
+            fprintf(stderr, "[rpitx] %*c(%d)", librpitx_debug_id, ' ', librpitx_debug_id);
+            ++librpitx_debug_id;
         }
         if (!debug_id_m)
-            fprintf(stderr, "%*c", debug_id, ' ');
+            fprintf(stderr, "[rpitx] %*c", librpitx_debug_id, ' ');
         vfprintf(stderr, fmt, args);
         va_end(args);
         debug_id_m = false;
