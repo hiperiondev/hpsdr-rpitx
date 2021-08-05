@@ -54,18 +54,19 @@ void rpitx_iq_deinit(void) {
 
 void rpitx_iq_send(struct samples_t *iqsamples_tx, int *enable) {
     dbg_printf(0, " >> Start rpitx iq send | IQBURST: %d <<\n", IQBURST);
-    int *ext_txdrive;
+
+    std::complex<float> CIQBuffer[IQBURST];
+
+      int CplxSampleNumber = 0;
+      int rp_txptr = iqsamples_tx->txptr;
+      int *ext_txdrive;
+    float tx_drive = 0;
 
     if (np_running()) {
         ext_txdrive = &(np_settings.txdrive);
     } else {
         ext_txdrive = &(op_settings.txdrive);
     }
-
-    std::complex<float> CIQBuffer[IQBURST];
-    int CplxSampleNumber = 0;
-    int rp_txptr = iqsamples_tx->txptr;
-    float tx_drive = 0;
 
     while (1) {
         if (*ext_txdrive != tx_drive) {

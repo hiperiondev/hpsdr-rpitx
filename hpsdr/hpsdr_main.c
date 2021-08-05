@@ -69,7 +69,7 @@
    struct samples_t iqsamples;   //
     float TX_Frequency;          //
 pthread_t tx_hardware_thread_id; //
-      int IQBURST = 50;
+      int IQBURST = 60;
 
 static int oldnew = 3; // 1: only P1, 2: only P2, 3: P1 and P2
 
