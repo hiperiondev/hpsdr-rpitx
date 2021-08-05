@@ -32,6 +32,7 @@
 #include "librpitx.hpp"
 #include "librpitx_c.h"
 #include "hpsdr_main.h"
+#include "hpsdr_oldprotocol.h"
 
 //#define IQBURST 100
 
@@ -58,7 +59,13 @@ void rpitx_iq_send(struct samples_t *iqsamples_tx, int *enable) {
     std::complex<float> CIQBuffer[IQBURST];
     int CplxSampleNumber = 0;
     int rp_txptr = iqsamples_tx->txptr;
+    float tx_drive = 0;
+
     while (1) {
+        if (op_settings.txdrive != tx_drive) {
+            tx_drive = op_settings.txdrive;
+            dbg_printf(0, "                TX DRIVE= %d%\n", (int)((tx_drive / 255) * 100));
+        }
 
         if (rp_txptr > iqsamples_tx->txptr)
             rp_txptr = iqsamples_tx->txptr;
@@ -68,8 +75,8 @@ void rpitx_iq_send(struct samples_t *iqsamples_tx, int *enable) {
         for (int i = 0; i < IQBURST; i++) {
             if (i % Decimation == 0) {
                 CIQBuffer[CplxSampleNumber++] = std::complex<float>(
-                                                    (float) iqsamples_tx->isample[rp_txptr],
-                                                    (float) iqsamples_tx->qsample[rp_txptr]
+                                                    ((float) iqsamples_tx->isample[rp_txptr]) * (tx_drive / 255),
+                                                    ((float) iqsamples_tx->qsample[rp_txptr]) * (tx_drive / 255)
                                                 );
                 rp_txptr++;
             }
