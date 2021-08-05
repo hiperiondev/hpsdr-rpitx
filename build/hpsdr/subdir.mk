@@ -36,14 +36,14 @@ CPP_DEPS += \
 hpsdr/%.o: ../hpsdr/%.c hpsdr/subdir.mk
 	@echo 'Building file: $<'
 	@echo 'Invoking: Cross GCC Compiler'
-	gcc -I"/home/opt/Desarrollos/workspace-rpitx/hpsdr-rpitx/librpitx" -I"/home/opt/Desarrollos/workspace-rpitx/hpsdr-rpitx/librpitx/core/include" -I"/home/opt/Desarrollos/workspace-rpitx/hpsdr-rpitx/librpitx/modulation/include" -I"/home/opt/Desarrollos/workspace-rpitx/hpsdr-rpitx/hpsdr/include" -O3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	gcc -I"../librpitx" -I"../librpitx/core/include" -I"../librpitx/modulation/include" -I"../hpsdr/include" -O3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
 hpsdr/%.o: ../hpsdr/%.cpp hpsdr/subdir.mk
 	@echo 'Building file: $<'
 	@echo 'Invoking: Cross G++ Compiler'
-	g++ -std=c++0x -I"/home/opt/Desarrollos/workspace-rpitx/hpsdr-rpitx/librpitx" -I"/home/opt/Desarrollos/workspace-rpitx/hpsdr-rpitx/librpitx/core/include" -I"/home/opt/Desarrollos/workspace-rpitx/hpsdr-rpitx/librpitx/modulation/include" -I"/home/opt/Desarrollos/workspace-rpitx/hpsdr-rpitx/hpsdr/include" -O3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	g++ -std=c++0x -I"../librpitx" -I"../librpitx/core/include" -I"../librpitx/modulation/include" -I"../hpsdr/include" -O3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
