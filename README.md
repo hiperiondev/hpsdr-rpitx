@@ -12,8 +12,8 @@ Trasceiver based on:
 hpsdr-rpitx [flags]
 
 flags:
- - -atlas:  
- - -hermes: 
+- -atlas:  
+- -hermes: 
 - -griffin: 
 - -angelia: 
 - -orion: 
@@ -25,4 +25,4 @@ flags:
 - -P1:
 - -P2:
 - -debug:
-
+- -iqburst:
