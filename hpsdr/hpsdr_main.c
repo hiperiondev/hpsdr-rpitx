@@ -741,8 +741,8 @@ int main(int argc, char *argv[]) {
 void* tx_hardware_thread(void *data) {
     hpsdr_dbg_printf(1, "< Start tx_hardware_thread >\n");
     hpsdr_dbg_printf(1, " -- TX Frequency: %f\n", TX_Frequency);
-    //rpitx_iq_init(48000,  TX_Frequency);
-    rpitx_iq_init(48000, 147360000); // only for test
+    rpitx_iq_init(48000, TX_Frequency);
+    //rpitx_iq_init(48000, 147360000); // only for test
 
     while (1) {
         if (!enable_thread)

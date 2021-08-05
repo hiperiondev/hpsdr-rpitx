@@ -60,7 +60,7 @@ void rpitx_iq_send(struct samples_t *iqsamples_tx, int *enable) {
       int CplxSampleNumber = 0;
       int rp_txptr = iqsamples_tx->txptr;
       int *ext_txdrive;
-    float tx_drive = 0;
+    float tx_drive = 255;
 
     if (np_running()) {
         ext_txdrive = &(np_settings.txdrive);
@@ -71,7 +71,10 @@ void rpitx_iq_send(struct samples_t *iqsamples_tx, int *enable) {
     while (1) {
         if (*ext_txdrive != tx_drive) {
             tx_drive = *ext_txdrive;
-            dbg_printf(0, "                TX DRIVE= %d%\n", (int)((tx_drive / 255) * 100));
+            if (tx_drive < 128) {
+                tx_drive = 128;
+            } else
+                dbg_printf(0, "                TX DRIVE= %d%\n", (int) ((tx_drive / 255) * 100));
         }
 
         if (rp_txptr > iqsamples_tx->txptr)
