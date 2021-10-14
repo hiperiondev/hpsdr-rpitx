@@ -1,3 +1,8 @@
+# THIS PROJECT WILL BE REPLACED BY: 
+- https://github.com/hiperiondev/hpsdr-protocol1-rpitx
+- https://github.com/hiperiondev/hpsdr-protocol2-rpitx
+# -----------------------------------------------------------------------------------
+
 # hpsdr-rpitx
 Trasceiver based on:
 - librpitx (https://github.com/F5OEO/librpitx)
