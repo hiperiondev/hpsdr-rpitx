@@ -1,5 +1,5 @@
 # THIS PROJECT WILL BE REPLACED BY: 
-- https://github.com/hiperiondev/hpsdr-protocol1-rpitx
+- https://github.com/hiperiondev/hpsdr-p1-rpitx
 - https://github.com/hiperiondev/hpsdr-protocol2-rpitx
 # -----------------------------------------------------------------------------------
 
